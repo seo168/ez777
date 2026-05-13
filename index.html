@@ -8,12 +8,8 @@
   <meta name="description" content="Official app info for yygame (India): version, size, welcome bonus, and direct APK download link. UPI ₹ deposits, fast withdrawals. Mobile-first. 18+ only."/>
   <meta name="robots" content="index,follow"/>
 
-  <!-- Canonical ke URL tanpa .html -->
   <link rel="canonical" href="https://yygame-in.com/app-info/"/>
 
-  <!-- (hapus alt lama ke GitHub Pages) -->
-
-  <!-- Open Graph / Twitter -->
   <meta property="og:site_name" content="yygame" />
   <meta property="og:title" content="YYGAME App Info (India)"/>
   <meta name="description" content="yygame (YY Game) app details for India: version, APK size, Android requirements, and features. Download the official YY Game APK safely.">
@@ -22,14 +18,12 @@
   <meta property="og:image" content="https://yygame-in.com/assets/hero.webp"/>
   <meta name="twitter:card" content="summary_large_image"/>
 
-  <!-- Favicons -->
   <meta name="theme-color" content="#b31c18" />
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png?v=4" sizes="180x180">
   <link rel="manifest" href="/site.webmanifest?v=6">
 
-  <!-- Preload aset penting -->
   <link rel="preload" as="image" href="/assets/hero.webp"/>
   <link rel="preload" as="image" href="/assets/logo.webp"/>
 
@@ -81,7 +75,6 @@
     .app-table .btn.primary{background:linear-gradient(180deg,var(--gold),#e9b23a);border-color:var(--gold-3);color:#3a2200}
     .app-table .btn.full{width:100%;box-sizing:border-box;justify-content:center;padding:12px 14px;white-space:nowrap}
 
-    /* Watermark dekoratif di belakang judul */
     .hero-head{position:relative;overflow:hidden}
     .hero-head::before{
       content:"";position:absolute;inset:0;
@@ -97,24 +90,6 @@
     .foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:var(--muted);padding-block:22px}
   </style>
 
-  <!-- JSON-LD: MobileApplication -->
-  <script type="application/ld+json">{
-    "@context":"https://schema.org","@type":"MobileApplication",
-    "name":"yygame","operatingSystem":"Android","applicationCategory":"GameApplication","inLanguage":"en-IN",
-    "softwareVersion":"1.0.4",
-    "downloadUrl":"https://dclaa7imbttae.cloudfront.net/apk/yy.tpnja.apk",
-    "publisher":{"@type":"Organization","name":"YYGAME"},
-    "offers":{"@type":"Offer","price":"0","priceCurrency":"INR"}
-  }</script>
-
-  <!-- JSON-LD: Breadcrumbs (pakai domain kamu) -->
-  <script type="application/ld+json">{
-    "@context":"https://schema.org","@type":"BreadcrumbList",
-    "itemListElement":[
-      {"@type":"ListItem","position":1,"name":"Home","item":"https://yygame-in.com/"},
-      {"@type":"ListItem","position":2,"name":"App Info","item":"https://yygame-in.com/app-info/"}
-    ]
-  }</script>
 </head>
 <body>
   <header aria-label="Main navigation">
@@ -123,7 +98,11 @@
         <img class="logo" src="/assets/logo.webp" alt="yygame logo" width="32" height="32" />
         <span>yygame</span>
       </div>
-      <button class="hamb" aria-controls="site-menu" aria-expanded="false" aria-label="Open menu"><span></span></button>
+
+      <button class="hamb" aria-controls="site-menu" aria-expanded="false" aria-label="Open menu">
+        <span></span>
+      </button>
+
       <nav id="site-menu" class="menu" aria-label="Primary">
         <a class="btn" href="/">Home</a>
         <a class="btn" href="/how-to-download/">How to Download</a>
@@ -132,26 +111,78 @@
   </header>
 
   <main class="container" id="main">
+
     <section class="section hero-head">
       <h1>yygame — App Information (India)</h1>
-      <p class="muted">Quick details about the yygame Android app for Indian players. UPI ₹ deposits, fast withdrawals, free spins & daily promos. 18+ only — play responsibly.</p>
+      <p class="muted">
+        Quick details about the yygame Android app for Indian players.
+        UPI ₹ deposits, fast withdrawals, free spins & daily promos.
+        18+ only — play responsibly.
+      </p>
     </section>
 
+    <!-- BUSINESS BUTTON -->
+    <section class="section" style="padding-top:0">
+      <div style="display:flex;justify-content:center">
+        <a
+          class="btn primary"
+          href="https://t.me/yourchannel"
+          target="_blank"
+          rel="noopener noreferrer"
+          style="padding:14px 22px;font-size:16px;font-weight:700"
+        >
+          Contact Us For Business Partnership
+        </a>
+      </div>
+    </section>
+
+    <!-- APP DETAILS -->
     <section class="card section" aria-labelledby="app-details">
       <h2 id="app-details">App details</h2>
+
       <div class="table-wrap">
         <table class="app-table" role="table" aria-describedby="app-details">
-          <colgroup><col><col></colgroup>
-          <thead><tr><th>Info</th><th>Details</th></tr></thead>
+          <colgroup>
+            <col>
+            <col>
+          </colgroup>
+
+          <thead>
+            <tr>
+              <th>Info</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+
           <tbody>
-            <tr><td><strong>Name</strong></td><td>yygame</td></tr>
-            <tr><td><strong>Version</strong></td><td>1.0.4</td></tr>
-            <tr><td><strong>Size</strong></td><td>~20&nbsp;MB</td></tr>
-            <tr><td><strong>Welcome Bonus</strong></td><td>₹500</td></tr>
+            <tr>
+              <td><strong>Name</strong></td>
+              <td>yygame</td>
+            </tr>
+
+            <tr>
+              <td><strong>Version</strong></td>
+              <td>1.0.4</td>
+            </tr>
+
+            <tr>
+              <td><strong>Size</strong></td>
+              <td>~20 MB</td>
+            </tr>
+
+            <tr>
+              <td><strong>Welcome Bonus</strong></td>
+              <td>₹500</td>
+            </tr>
+
             <tr>
               <td><strong>App Link</strong></td>
               <td>
-                <a class="btn primary full" href="https://dclaa7imbttae.cloudfront.net/apk/yy.tpnja.apk" aria-label="Download yygame">
+                <a
+                  class="btn primary full"
+                  href="https://dclaa7imbttae.cloudfront.net/apk/yy.tpnja.apk"
+                  aria-label="Download yygame"
+                >
                   Download
                 </a>
               </td>
@@ -165,44 +196,63 @@
       </div>
     </section>
 
+    <!-- NOTES -->
     <section class="card section" aria-labelledby="notes">
       <h2 id="notes">Notes</h2>
+
       <ul class="muted" style="margin:0;padding-left:18px">
         <li>Enable “Install unknown apps” on Android if prompted.</li>
         <li>Bonus availability depends on terms and local/state laws in India.</li>
-        <li>Mobile-first UI for smoother play on most Android devices. See the <a href="/how-to-download/">How to Download guide</a>.</li>
+        <li>
+          Mobile-first UI for smoother play on most Android devices.
+          See the <a href="/how-to-download/">How to Download guide</a>.
+        </li>
       </ul>
     </section>
 
-   <section class="card section" aria-labelledby="business">
-     <h2 id="business">Business Partnership</h2>
-     <p class="muted" style="margin:0">
-       Interested in growing together with yygame? 
-       We are open for long-term business partnerships, marketing collaborations, and agent cooperation.
-       Contact us anytime for more details and partnership opportunities.
-     </p>
-   </section>
+    <!-- BUSINESS SECTION -->
+    <section class="card section" aria-labelledby="business">
+      <h2 id="business">Business Partnership</h2>
 
-    <section class="card section" aria-labelledby="disclaimer">
-      <h2 id="disclaimer">Disclaimer</h2>
       <p class="muted" style="margin:0">
-        yygame-in.com is only for sharing direct download/referral links for yy.game and other gaming apk. This app is owned by YYGAME, contact them if you have any questions or queries.
-        We do not own the app nor claim copyright for images and logos. This website is just for APK download.
+        Interested in growing together with yygame?
+        We are open for long-term business partnerships,
+        marketing collaborations, and agent cooperation.
+        Contact us anytime for more details and partnership opportunities.
       </p>
     </section>
+
+    <!-- DISCLAIMER -->
+    <section class="card section" aria-labelledby="disclaimer">
+      <h2 id="disclaimer">Disclaimer</h2>
+
+      <p class="muted" style="margin:0">
+        yygame-in.com is only for sharing direct download/referral links
+        for yy.game and other gaming apk.
+        This app is owned by YYGAME, contact them if you have any questions or queries.
+        We do not own the app nor claim copyright for images and logos.
+        This website is just for APK download.
+      </p>
+    </section>
+
   </main>
 
   <footer>
     <div class="container foot">
       <span>© <span id="y"></span> yygame. All rights reserved.</span>
-      <span class="muted"><a href="/#privacy">Privacy Policy</a> · <a href="/#terms">Terms</a></span>
+      <span class="muted">
+        <a href="/#privacy">Privacy Policy</a> ·
+        <a href="/#terms">Terms</a>
+      </span>
     </div>
   </footer>
 
   <script>
     document.getElementById('y').textContent = new Date().getFullYear();
+
     const hamb = document.querySelector('.hamb');
     const menu = document.getElementById('site-menu');
+
     if (hamb && menu){
       hamb.addEventListener('click', () => {
         const open = menu.classList.toggle('open');
