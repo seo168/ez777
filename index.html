@@ -132,86 +132,7 @@
       color:#3a2200;
       font-weight:800;
     }
-
-    .hamb{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      width:44px;
-      height:40px;
-      border:1px solid var(--border);
-      border-radius:12px;
-      background:#1a0e10;
-      cursor:pointer;
-    }
-
-    .hamb span{
-      display:block;
-      width:18px;
-      height:2px;
-      background:var(--text);
-      border-radius:2px;
-      position:relative;
-    }
-
-    .hamb span::before,
-    .hamb span::after{
-      content:"";
-      position:absolute;
-      left:0;
-      width:18px;
-      height:2px;
-      background:var(--text);
-      border-radius:2px;
-    }
-
-    .hamb span::before{top:-6px}
-    .hamb span::after{top:6px}
-
-    .menu{
-      display:none;
-      position:absolute;
-      top:68px;
-      right:24px;
-      left:24px;
-      background:rgba(26,14,16,.98);
-      border:1px solid rgba(244,193,93,.18);
-      border-radius:16px;
-      padding:10px;
-      gap:8px;
-      flex-direction:column;
-      box-shadow:0 18px 45px rgba(0,0,0,.35);
-    }
-
-    .menu .btn{
-      width:100%;
-    }
-
-    .menu.open{
-      display:flex;
-    }
-
-    @media (min-width:900px){
-      .menu{
-        display:flex !important;
-        position:static;
-        flex-direction:row;
-        background:transparent;
-        border:0;
-        padding:0;
-        gap:10px;
-        box-shadow:none;
-      }
-
-      .menu .btn{
-        width:auto;
-      }
-
-      .hamb{
-        display:none;
-      }
-    }
-
+    
     .section{
       padding-block:26px;
     }
@@ -507,14 +428,10 @@
         <span>yygame</span>
       </div>
 
-      <button class="hamb" aria-controls="site-menu" aria-expanded="false" aria-label="Open menu">
-        <span></span>
-      </button>
-
-      <nav id="site-menu" class="menu" aria-label="Primary">
-        <a class="btn" href="/">Home</a>
-        <a class="btn" href="/how-to-download/">How to Download</a>
-      </nav>
+      <nav style="display:flex;gap:10px;align-items:center">
+  <a class="btn" href="/">Home</a>
+  <a class="btn" href="/how-to-download/">How to Download</a>
+</nav>
     </div>
   </header>
 
@@ -629,17 +546,7 @@
   </footer>
 
   <script>
-    document.getElementById('y').textContent = new Date().getFullYear();
-
-    const hamb = document.querySelector('.hamb');
-    const menu = document.getElementById('site-menu');
-
-    if (hamb && menu){
-      hamb.addEventListener('click', () => {
-        const open = menu.classList.toggle('open');
-        hamb.setAttribute('aria-expanded', open ? 'true' : 'false');
-      });
-    }
-  </script>
+  document.getElementById('y').textContent = new Date().getFullYear();
+</script>
 </body>
 </html>
