@@ -91,18 +91,27 @@
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  padding:16px 28px;
+  width:100%;
+  max-width:420px;
+  padding:16px 24px;
   border-radius:999px;
   background:linear-gradient(135deg,#f4c15d,#ff7a18,#f4c15d);
   background-size:200% 200%;
-  color:#2b1600;
+  color:#2b1600 !important;
   font-size:16px;
   font-weight:900;
   letter-spacing:.3px;
   text-decoration:none;
-  box-shadow:0 0 18px rgba(244,193,93,.55),0 0 40px rgba(255,122,24,.25);
-  animation:businessGlow 2s ease-in-out infinite, businessMove 3s linear infinite;
+  text-align:center;
+  line-height:1.4;
+  box-shadow:
+    0 0 18px rgba(244,193,93,.55),
+    0 0 40px rgba(255,122,24,.25);
+  animation:
+    businessGlow 2s ease-in-out infinite,
+    businessMove 3s linear infinite;
   overflow:hidden;
+  transition:all .25s ease;
 }
 
 .business-btn::before{
@@ -112,30 +121,82 @@
   left:-80%;
   width:60%;
   height:100%;
-  background:linear-gradient(120deg,transparent,rgba(255,255,255,.65),transparent);
+  background:linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,.7),
+    transparent
+  );
   transform:skewX(-25deg);
-  animation:businessShine 2.4s infinite;
+  animation:businessShine 2.5s infinite;
 }
 
 .business-btn:hover{
-  transform:translateY(-3px) scale(1.04);
-  box-shadow:0 0 25px rgba(244,193,93,.75),0 0 55px rgba(255,122,24,.4);
+  transform:translateY(-3px) scale(1.03);
+  box-shadow:
+    0 0 28px rgba(244,193,93,.9),
+    0 0 60px rgba(255,122,24,.45);
 }
 
 @keyframes businessGlow{
-  0%,100%{box-shadow:0 0 18px rgba(244,193,93,.55),0 0 40px rgba(255,122,24,.25)}
-  50%{box-shadow:0 0 28px rgba(244,193,93,.9),0 0 65px rgba(255,122,24,.45)}
+  0%,100%{
+    box-shadow:
+      0 0 18px rgba(244,193,93,.55),
+      0 0 40px rgba(255,122,24,.25);
+  }
+
+  50%{
+    box-shadow:
+      0 0 28px rgba(244,193,93,.9),
+      0 0 65px rgba(255,122,24,.45);
+  }
 }
 
 @keyframes businessMove{
-  0%{background-position:0% 50%}
-  100%{background-position:200% 50%}
+  0%{
+    background-position:0% 50%;
+  }
+
+  100%{
+    background-position:200% 50%;
+  }
 }
 
 @keyframes businessShine{
-  0%{left:-80%}
-  60%{left:130%}
-  100%{left:130%}
+  0%{
+    left:-80%;
+  }
+
+  60%{
+    left:130%;
+  }
+
+  100%{
+    left:130%;
+  }
+}
+
+/* MOBILE VIEW */
+@media (max-width:768px){
+
+  .business-btn{
+    width:100%;
+    max-width:100%;
+    padding:15px 18px;
+    font-size:14px;
+    border-radius:18px;
+  }
+
+}
+
+@media (max-width:480px){
+
+  .business-btn{
+    font-size:13px;
+    padding:14px 14px;
+    line-height:1.5;
+  }
+
 }
 
     footer{border-top:1px solid var(--border);margin-top:40px}
