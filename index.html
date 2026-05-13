@@ -40,34 +40,16 @@
 
     *{box-sizing:border-box}
 
-    html{
-      scroll-behavior:smooth;
-    }
-
-    body{
+    html,body{
       margin:0;
       padding:0;
       background:
         radial-gradient(circle at top left, rgba(244,193,93,.12), transparent 32%),
-        radial-gradient(circle at top right, rgba(179,28,24,.22), transparent 38%),
+        radial-gradient(circle at top right, rgba(179,28,24,.2), transparent 36%),
         linear-gradient(180deg,#100608 0%,#1a0e10 100%);
       color:var(--text);
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
       line-height:1.6;
-      min-height:100vh;
-    }
-
-    body::before{
-      content:"";
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      background:
-        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
-      background-size:42px 42px;
-      mask-image:linear-gradient(to bottom, rgba(0,0,0,.7), transparent 80%);
-      z-index:0;
     }
 
     a{
@@ -86,8 +68,6 @@
     }
 
     .container{
-      position:relative;
-      z-index:1;
       max-width:1120px;
       margin:0 auto;
       padding:24px;
@@ -98,9 +78,9 @@
       top:0;
       z-index:10;
       backdrop-filter:blur(14px);
-      background:rgba(26,14,16,.82);
+      background:rgba(26,14,16,.88);
       border-bottom:1px solid rgba(244,193,93,.16);
-      box-shadow:0 10px 30px rgba(0,0,0,.25);
+      box-shadow:0 10px 28px rgba(0,0,0,.28);
     }
 
     .nav{
@@ -124,10 +104,9 @@
       border-radius:12px;
       object-fit:cover;
       border:1px solid var(--gold-3);
-      box-shadow:0 0 30px rgba(244,193,93,.35);
+      box-shadow:0 0 30px rgba(244,193,93,.32);
     }
 
-    .nav a.btn,
     .btn{
       display:inline-flex;
       align-items:center;
@@ -135,20 +114,18 @@
       padding:10px 16px;
       border:1px solid var(--border);
       border-radius:12px;
-      background:rgba(35,15,19,.72);
+      background:rgba(35,15,19,.75);
       color:var(--text);
       font-weight:700;
       transition:all .22s ease;
     }
 
-    .nav a.btn:hover,
     .btn:hover{
       transform:translateY(-2px);
       border-color:rgba(244,193,93,.5);
       box-shadow:0 10px 26px rgba(0,0,0,.22);
     }
 
-    .nav a.btn.primary,
     .btn.primary{
       background:linear-gradient(180deg,var(--gold),#e9b23a);
       border-color:var(--gold-3);
@@ -165,7 +142,6 @@
       border:1px solid var(--border);
       border-radius:12px;
       background:#1a0e10;
-      color:var(--text);
       cursor:pointer;
     }
 
@@ -237,20 +213,19 @@
     }
 
     .section{
-      padding-block:28px;
+      padding-block:26px;
     }
 
     h1{
-      font-size:clamp(26px,4.8vw,44px);
+      font-size:clamp(26px,4.8vw,42px);
       line-height:1.12;
       margin:14px 0;
-      letter-spacing:-.7px;
+      letter-spacing:-.6px;
     }
 
     h2{
       margin:8px 0 10px;
       font-size:clamp(20px,3vw,26px);
-      letter-spacing:-.25px;
     }
 
     .muted{
@@ -271,32 +246,11 @@
       overflow:hidden;
     }
 
-    .card::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:linear-gradient(135deg,rgba(244,193,93,.08),transparent 38%);
-      pointer-events:none;
-    }
-
-    .card > *{
-      position:relative;
-      z-index:1;
-    }
-
-    .card:hover{
-      border-color:rgba(244,193,93,.28);
-      box-shadow:
-        0 22px 55px rgba(0,0,0,.34),
-        0 0 35px rgba(244,193,93,.06),
-        inset 0 1px 0 rgba(255,255,255,.06);
-    }
-
     .hero-head{
       position:relative;
       overflow:hidden;
-      padding-top:38px;
-      padding-bottom:22px;
+      padding-top:36px;
+      padding-bottom:20px;
     }
 
     .hero-head::before{
@@ -304,23 +258,9 @@
       position:absolute;
       inset:0;
       background:no-repeat right center / min(520px,45vw) url("/assets/app-info-bg.webp");
-      opacity:.2;
+      opacity:.22;
       pointer-events:none;
       z-index:0;
-      filter:drop-shadow(0 0 24px rgba(244,193,93,.12));
-    }
-
-    .hero-head::after{
-      content:"APP INFO";
-      position:absolute;
-      right:24px;
-      bottom:0;
-      font-size:clamp(42px,10vw,120px);
-      font-weight:1000;
-      letter-spacing:-4px;
-      color:rgba(244,193,93,.045);
-      z-index:0;
-      pointer-events:none;
     }
 
     .hero-head>*{
@@ -344,7 +284,6 @@
       font-size:17px;
       font-weight:1000;
       letter-spacing:.35px;
-      text-decoration:none;
       text-align:center;
       line-height:1.35;
       border:1px solid rgba(255,255,255,.28);
@@ -383,10 +322,6 @@
 
     .business-btn:hover{
       transform:translateY(-4px) scale(1.04);
-      box-shadow:
-        0 0 30px rgba(244,193,93,.92),
-        0 0 70px rgba(255,122,24,.48),
-        0 22px 42px rgba(0,0,0,.38);
     }
 
     @keyframes businessGlow{
@@ -421,91 +356,57 @@
       50%{transform:translateY(-4px)}
     }
 
-    .table-wrap{
-      overflow-x:auto;
-      margin-top:12px;
+    .app-details-list{
+      display:grid;
+      gap:12px;
+      margin-top:16px;
     }
 
-    .app-table{
-      width:100%;
-      border-collapse:separate;
-      border-spacing:0 12px;
-      table-layout:fixed;
-    }
-
-    .app-table col{
-      width:50%;
-    }
-
-    .app-table thead th,
-    .app-table tbody td{
-      text-align:center;
-      vertical-align:middle;
-      padding:14px 16px;
-      border:1px solid rgba(244,193,93,.15);
-      overflow:hidden;
-      white-space:nowrap;
-      text-overflow:ellipsis;
-    }
-
-    .app-table thead th{
-      background:rgba(255,247,242,.07);
-      color:var(--muted);
-      font-weight:900;
-      text-transform:uppercase;
-      font-size:13px;
-      letter-spacing:.45px;
-    }
-
-    .app-table tbody td{
-      background:rgba(26,14,16,.92);
-      box-shadow:0 8px 20px rgba(0,0,0,.14);
-    }
-
-    .app-table tbody tr{
-      transition:all .2s ease;
-    }
-
-    .app-table tbody tr:hover td{
-      border-color:rgba(244,193,93,.35);
-      background:rgba(35,15,19,.98);
-    }
-
-    .app-table tbody td:first-child{
-      border-top-left-radius:14px;
-      border-bottom-left-radius:14px;
-    }
-
-    .app-table tbody td:last-child{
-      border-top-right-radius:14px;
-      border-bottom-right-radius:14px;
-    }
-
-    .app-table .btn{
-      display:inline-flex;
+    .detail-item{
+      display:flex;
       align-items:center;
-      gap:8px;
-      padding:10px 14px;
-      border-radius:12px;
-      border:1px solid var(--border);
-      background:#230f13;
+      justify-content:space-between;
+      gap:12px;
+      padding:15px 16px;
+      border:1px solid rgba(244,193,93,.16);
+      border-radius:16px;
+      background:rgba(35,15,19,.72);
+      box-shadow:0 8px 20px rgba(0,0,0,.16);
+    }
+
+    .detail-item span{
+      color:var(--muted);
+      font-size:14px;
+      font-weight:700;
+    }
+
+    .detail-item strong{
       color:var(--text);
-      font-weight:800;
-      text-decoration:none;
+      font-size:15px;
+      text-align:right;
     }
 
-    .app-table .btn.primary{
-      background:linear-gradient(180deg,var(--gold),#e9b23a);
-      border-color:var(--gold-3);
-      color:#3a2200;
-    }
-
-    .app-table .btn.full{
-      width:100%;
-      box-sizing:border-box;
+    .download-main-btn{
+      display:flex;
+      align-items:center;
       justify-content:center;
-      padding:13px 14px;
-      white-space:nowrap;
+      width:100%;
+      margin-top:4px;
+      padding:16px 18px;
+      border-radius:16px;
+      background:linear-gradient(180deg,var(--gold),#e9b23a);
+      border:1px solid var(--gold-3);
+      color:#3a2200 !important;
+      font-size:16px;
+      font-weight:900;
+      text-decoration:none;
+      box-shadow:0 12px 28px rgba(244,193,93,.22);
+      transition:all .22s ease;
+    }
+
+    .download-main-btn:hover{
+      transform:translateY(-2px);
+      box-shadow:0 16px 34px rgba(244,193,93,.32);
     }
 
     ul.muted li{
@@ -513,8 +414,6 @@
     }
 
     footer{
-      position:relative;
-      z-index:1;
       border-top:1px solid rgba(244,193,93,.16);
       margin-top:40px;
       background:rgba(16,6,8,.35);
@@ -534,11 +433,6 @@
         background-position:center right 10px;
         background-size:min(400px,70vw);
         opacity:.32;
-      }
-
-      .hero-head::after{
-        right:12px;
-        font-size:64px;
       }
     }
 
@@ -564,50 +458,9 @@
         border-radius:20px;
       }
 
-      .app-table{
-        border-spacing:0 10px;
-      }
-
-      .app-table thead{
-        display:none;
-      }
-
-      .app-table,
-      .app-table tbody,
-      .app-table tr,
-      .app-table td{
-        display:block;
-        width:100%;
-      }
-
-      .app-table tbody tr{
-        background:rgba(26,14,16,.92);
-        border:1px solid rgba(244,193,93,.15);
-        border-radius:16px;
-        margin-bottom:12px;
-        overflow:hidden;
-        box-shadow:0 10px 24px rgba(0,0,0,.18);
-      }
-
-      .app-table tbody td{
-        border:0;
-        border-radius:0 !important;
-        white-space:normal;
-        text-overflow:clip;
-        box-shadow:none;
-        padding:12px 14px;
-      }
-
-      .app-table tbody td:first-child{
-        background:rgba(255,247,242,.06);
-        color:var(--muted);
-        font-size:13px;
-        text-transform:uppercase;
-        letter-spacing:.35px;
-      }
-
-      .app-table tbody td:last-child{
-        font-size:15px;
+      .detail-item{
+        padding:14px;
+        border-radius:14px;
       }
 
       .foot{
@@ -630,13 +483,22 @@
         line-height:1.45;
       }
 
-      .hero-head::after{
-        display:none;
+      .detail-item span{
+        font-size:13px;
+      }
+
+      .detail-item strong{
+        font-size:14px;
+      }
+
+      .download-main-btn{
+        padding:15px 16px;
+        font-size:15px;
       }
     }
   </style>
-
 </head>
+
 <body>
   <header aria-label="Main navigation">
     <div class="container nav">
@@ -667,7 +529,6 @@
       </p>
     </section>
 
-    <!-- BUSINESS BUTTON -->
     <section class="section" style="padding-top:0">
       <div style="display:flex;justify-content:center">
         <a
@@ -681,67 +542,44 @@
       </div>
     </section>
 
-    <!-- APP DETAILS -->
     <section class="card section" aria-labelledby="app-details">
       <h2 id="app-details">App details</h2>
 
-      <div class="table-wrap">
-        <table class="app-table" role="table" aria-describedby="app-details">
-          <colgroup>
-            <col>
-            <col>
-          </colgroup>
+      <div class="app-details-list">
+        <div class="detail-item">
+          <span>Name</span>
+          <strong>yygame</strong>
+        </div>
 
-          <thead>
-            <tr>
-              <th>Info</th>
-              <th>Details</th>
-            </tr>
-          </thead>
+        <div class="detail-item">
+          <span>Version</span>
+          <strong>1.0.4</strong>
+        </div>
 
-          <tbody>
-            <tr>
-              <td><strong>Name</strong></td>
-              <td>yygame</td>
-            </tr>
+        <div class="detail-item">
+          <span>Size</span>
+          <strong>~20 MB</strong>
+        </div>
 
-            <tr>
-              <td><strong>Version</strong></td>
-              <td>1.0.4</td>
-            </tr>
+        <div class="detail-item">
+          <span>Welcome Bonus</span>
+          <strong>₹500</strong>
+        </div>
 
-            <tr>
-              <td><strong>Size</strong></td>
-              <td>~20 MB</td>
-            </tr>
-
-            <tr>
-              <td><strong>Welcome Bonus</strong></td>
-              <td>₹500</td>
-            </tr>
-
-            <tr>
-              <td><strong>App Link</strong></td>
-              <td>
-                <a
-                  class="btn primary full"
-                  href="https://dclaa7imbttae.cloudfront.net/apk/yy.tpnja.apk"
-                  aria-label="Download yygame"
-                >
-                  Download
-                </a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <a
+          class="download-main-btn"
+          href="https://dclaa7imbttae.cloudfront.net/apk/yy.tpnja.apk"
+          aria-label="Download yygame"
+        >
+          Download
+        </a>
       </div>
 
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;justify-content:flex-end">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;justify-content:center">
         <a class="btn" href="/how-to-download/">Can't install?</a>
       </div>
     </section>
 
-    <!-- NOTES -->
     <section class="card section" aria-labelledby="notes">
       <h2 id="notes">Notes</h2>
 
@@ -755,7 +593,6 @@
       </ul>
     </section>
 
-    <!-- BUSINESS SECTION -->
     <section class="card section" aria-labelledby="business">
       <h2 id="business">Business Partnership</h2>
 
@@ -767,7 +604,6 @@
       </p>
     </section>
 
-    <!-- DISCLAIMER -->
     <section class="card section" aria-labelledby="disclaimer">
       <h2 id="disclaimer">Disclaimer</h2>
 
