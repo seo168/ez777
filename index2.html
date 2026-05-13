@@ -20,7 +20,6 @@
 <link rel="icon" href="/favicon.ico" sizes="any">
 
 <style>
-
 :root{
   --bg:#100608;
   --card:#1a0e10;
@@ -32,9 +31,7 @@
   --border:#4a1b20;
 }
 
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 html,body{
   margin:0;
@@ -48,13 +45,8 @@ html,body{
   min-height:100vh;
 }
 
-body{
-  overflow-x:hidden;
-}
-
-a{
-  text-decoration:none;
-}
+body{overflow-x:hidden}
+a{text-decoration:none}
 
 .container{
   max-width:1200px;
@@ -62,9 +54,7 @@ a{
   padding:24px;
 }
 
-header{
-  padding-top:10px;
-}
+header{padding-top:10px}
 
 .brand{
   display:flex;
@@ -156,19 +146,12 @@ header{
   left:-80%;
   width:60%;
   height:100%;
-  background:linear-gradient(
-    120deg,
-    transparent,
-    rgba(255,255,255,.7),
-    transparent
-  );
+  background:linear-gradient(120deg,transparent,rgba(255,255,255,.7),transparent);
   transform:skewX(-25deg);
   animation:shine 2.5s infinite;
 }
 
-.contact-btn:hover{
-  transform:translateY(-3px) scale(1.03);
-}
+.contact-btn:hover{transform:translateY(-3px) scale(1.03)}
 
 @keyframes glow{
   0%,100%{
@@ -176,7 +159,6 @@ header{
       0 0 20px rgba(244,193,93,.55),
       0 0 55px rgba(255,122,24,.28);
   }
-
   50%{
     box-shadow:
       0 0 32px rgba(244,193,93,.95),
@@ -185,27 +167,14 @@ header{
 }
 
 @keyframes gradientMove{
-  0%{
-    background-position:0% 50%;
-  }
-
-  100%{
-    background-position:220% 50%;
-  }
+  0%{background-position:0% 50%}
+  100%{background-position:220% 50%}
 }
 
 @keyframes shine{
-  0%{
-    left:-80%;
-  }
-
-  60%{
-    left:130%;
-  }
-
-  100%{
-    left:130%;
-  }
+  0%{left:-80%}
+  60%{left:130%}
+  100%{left:130%}
 }
 
 .section-title{
@@ -269,13 +238,36 @@ header{
   margin-bottom:18px;
 }
 
+.platform-title{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+
+.platform-logo{
+  width:46px;
+  height:46px;
+  border-radius:14px;
+  object-fit:cover;
+  border:1px solid rgba(244,193,93,.22);
+  background:#12090b;
+  box-shadow:
+    0 0 18px rgba(244,193,93,.16),
+    inset 0 1px 0 rgba(255,255,255,.04);
+  flex-shrink:0;
+}
+
 .platform-name{
-  font-size:30px;
+  font-size:28px;
   font-weight:1000;
   letter-spacing:-1px;
+  line-height:1.1;
+  word-break:break-word;
 }
 
 .platform-badge{
+  flex-shrink:0;
   padding:8px 12px;
   border-radius:999px;
   background:rgba(244,193,93,.12);
@@ -307,9 +299,7 @@ header{
   transition:all .22s ease;
 }
 
-.platform-btn:hover{
-  transform:translateY(-2px);
-}
+.platform-btn:hover{transform:translateY(-2px)}
 
 .info-box{
   margin-top:60px;
@@ -346,70 +336,51 @@ footer{
 }
 
 @media (max-width:980px){
-
-  .platform-grid{
-    grid-template-columns:repeat(2,1fr);
-  }
-
+  .platform-grid{grid-template-columns:repeat(2,1fr)}
 }
 
 @media (max-width:768px){
-
-  .container{
-    padding:18px;
-  }
-
-  .hero{
-    padding-top:50px;
-  }
-
-  .hero p{
-    font-size:15px;
-  }
-
+  .container{padding:18px}
+  .hero{padding-top:50px}
+  .hero p{font-size:15px}
   .platform-grid{
     grid-template-columns:1fr;
     gap:18px;
   }
-
   .platform-card{
     padding:22px;
     border-radius:22px;
   }
-
-  .platform-name{
-    font-size:28px;
-  }
-
+  .platform-name{font-size:26px}
   .platform-desc{
     min-height:auto;
     font-size:14px;
   }
-
   .contact-btn{
     max-width:100%;
     padding:16px 18px;
     font-size:15px;
   }
-
 }
 
 @media (max-width:480px){
-
-  .hero h1{
-    font-size:36px;
+  .hero h1{font-size:36px}
+  .platform-top{
+    align-items:flex-start;
+    gap:10px;
   }
-
-  .platform-name{
-    font-size:24px;
+  .platform-logo{
+    width:42px;
+    height:42px;
+    border-radius:13px;
   }
-
-  .platform-btn{
-    font-size:14px;
+  .platform-name{font-size:22px}
+  .platform-badge{
+    font-size:10px;
+    padding:7px 9px;
   }
-
+  .platform-btn{font-size:14px}
 }
-
 </style>
 </head>
 
@@ -458,7 +429,10 @@ footer{
 
     <div class="platform-card">
       <div class="platform-top">
-        <div class="platform-name">YYGAME</div>
+        <div class="platform-title">
+          <img class="platform-logo" src="/assets/yygame-logo.webp" alt="YYGAME logo">
+          <div class="platform-name">YYGAME</div>
+        </div>
         <div class="platform-badge">HOT</div>
       </div>
 
@@ -474,7 +448,10 @@ footer{
 
     <div class="platform-card">
       <div class="platform-top">
-        <div class="platform-name">XX5.COM</div>
+        <div class="platform-title">
+          <img class="platform-logo" src="/assets/xx5-logo.webp" alt="XX5 logo">
+          <div class="platform-name">XX5.COM</div>
+        </div>
         <div class="platform-badge">TRENDING</div>
       </div>
 
@@ -490,7 +467,10 @@ footer{
 
     <div class="platform-card">
       <div class="platform-top">
-        <div class="platform-name">YY9.COM</div>
+        <div class="platform-title">
+          <img class="platform-logo" src="/assets/yy9-logo.webp" alt="YY9 logo">
+          <div class="platform-name">YY9.COM</div>
+        </div>
         <div class="platform-badge">NEW</div>
       </div>
 
@@ -506,7 +486,10 @@ footer{
 
     <div class="platform-card">
       <div class="platform-top">
-        <div class="platform-name">XX6.COM</div>
+        <div class="platform-title">
+          <img class="platform-logo" src="/assets/xx6-logo.webp" alt="XX6 logo">
+          <div class="platform-name">XX6.COM</div>
+        </div>
         <div class="platform-badge">POPULAR</div>
       </div>
 
@@ -522,7 +505,10 @@ footer{
 
     <div class="platform-card">
       <div class="platform-top">
-        <div class="platform-name">XX7.COM</div>
+        <div class="platform-title">
+          <img class="platform-logo" src="/assets/xx7-logo.webp" alt="XX7 logo">
+          <div class="platform-name">XX7.COM</div>
+        </div>
         <div class="platform-badge">TOP</div>
       </div>
 
@@ -538,7 +524,10 @@ footer{
 
     <div class="platform-card">
       <div class="platform-top">
-        <div class="platform-name">66GAME</div>
+        <div class="platform-title">
+          <img class="platform-logo" src="/assets/66game-logo.webp" alt="66GAME logo">
+          <div class="platform-name">66GAME</div>
+        </div>
         <div class="platform-badge">FAST GROWTH</div>
       </div>
 
