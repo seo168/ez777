@@ -357,7 +357,10 @@ header{
 }
 
 .feature-list span{
-  display:block;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
   padding:9px 11px;
   border-radius:12px;
   background:rgba(244,193,93,.07);
@@ -366,21 +369,47 @@ header{
   font-size:13px;
 }
 
+.feature-list b{
+  color:var(--text);
+  font-size:13px;
+  text-align:right;
+}
+
+.platform-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:4px;
+}
+
+.channel-btn,
 .platform-btn{
   display:flex;
   align-items:center;
   justify-content:center;
   width:100%;
-  padding:15px 18px;
+  padding:14px 12px;
   border-radius:16px;
+  font-weight:1000;
+  font-size:14px;
+  transition:all .22s ease;
+  text-align:center;
+  line-height:1.25;
+}
+
+.channel-btn{
+  background:rgba(244,193,93,.08);
+  border:1px solid rgba(244,193,93,.22);
+  color:var(--gold);
+}
+
+.platform-btn{
   background:linear-gradient(180deg,var(--gold),#e9b23a);
   border:1px solid var(--gold-3);
   color:#3a2200;
-  font-weight:1000;
-  font-size:15px;
-  transition:all .22s ease;
 }
 
+.channel-btn:hover,
 .platform-btn:hover{
   transform:translateY(-2px);
 }
@@ -563,8 +592,15 @@ footer{
     padding:7px 9px;
   }
 
+  .platform-actions{
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+
+  .channel-btn,
   .platform-btn{
-    font-size:14px;
+    font-size:12.5px;
+    padding:13px 8px;
   }
 }
 </style>
@@ -642,14 +678,19 @@ footer{
       </div>
 
       <div class="feature-list">
-        <span>Mobile-first gameplay</span>
-        <span>Daily bonus updates</span>
-        <span>Easy Android download</span>
+        <span>Version <b>1.0.4</b></span>
+        <span>Size <b>~20 MB</b></span>
+        <span>Welcome Bonus <b>₹500</b></span>
       </div>
 
-      <a class="platform-btn" href="https://dclaa7imbttae.cloudfront.net/apk/yy.tpnja.apk">
-        Download YYGAME APK
-      </a>
+      <div class="platform-actions">
+        <a class="channel-btn" href="https://t.me/india66agentclub" target="_blank">
+          Official Channel
+        </a>
+        <a class="platform-btn" href="https://dclaa7imbttae.cloudfront.net/apk/yy.tpnja.apk">
+          Download APK
+        </a>
+      </div>
     </div>
 
     <div class="platform-card">
@@ -666,14 +707,19 @@ footer{
       </div>
 
       <div class="feature-list">
-        <span>Smooth mobile app</span>
-        <span>Active player experience</span>
-        <span>Easy APK installation</span>
+        <span>Version <b>1.0.4</b></span>
+        <span>Size <b>~20 MB</b></span>
+        <span>Welcome Bonus <b>₹500</b></span>
       </div>
 
-      <a class="platform-btn" href="https://d1811ku0vicgoo.cloudfront.net/apk/XX5.7amav.apk">
-        Download XX5 APK
-      </a>
+      <div class="platform-actions">
+        <a class="channel-btn" href="https://t.me/india66agentclub" target="_blank">
+          Official Channel
+        </a>
+        <a class="platform-btn" href="https://d1811ku0vicgoo.cloudfront.net/apk/XX5.7amav.apk">
+          Download APK
+        </a>
+      </div>
     </div>
 
     <div class="platform-card">
@@ -690,14 +736,19 @@ footer{
       </div>
 
       <div class="feature-list">
-        <span>Fresh platform updates</span>
-        <span>Bonus information</span>
-        <span>Mobile-friendly interface</span>
+        <span>Version <b>1.0.4</b></span>
+        <span>Size <b>~20 MB</b></span>
+        <span>Welcome Bonus <b>₹500</b></span>
       </div>
 
-      <a class="platform-btn" href="https://d2rfqhp7azz49k.cloudfront.net/apk/YY9.7onms.apk">
-        Download YY9 APK
-      </a>
+      <div class="platform-actions">
+        <a class="channel-btn" href="https://t.me/india66agentclub" target="_blank">
+          Official Channel
+        </a>
+        <a class="platform-btn" href="https://d2rfqhp7azz49k.cloudfront.net/apk/YY9.7onms.apk">
+          Download APK
+        </a>
+      </div>
     </div>
 
     <div class="platform-card">
@@ -714,14 +765,19 @@ footer{
       </div>
 
       <div class="feature-list">
-        <span>Stable gameplay</span>
-        <span>Fast mobile access</span>
-        <span>User-friendly design</span>
+        <span>Version <b>1.0.4</b></span>
+        <span>Size <b>~20 MB</b></span>
+        <span>Welcome Bonus <b>₹500</b></span>
       </div>
 
-      <a class="platform-btn" href="https://d30vlgvvl0fj64.cloudfront.net/apk/XX6.8dobr.apk">
-        Download XX6 APK
-      </a>
+      <div class="platform-actions">
+        <a class="channel-btn" href="https://t.me/india66agentclub" target="_blank">
+          Official Channel
+        </a>
+        <a class="platform-btn" href="https://d30vlgvvl0fj64.cloudfront.net/apk/XX6.8dobr.apk">
+          Download APK
+        </a>
+      </div>
     </div>
 
     <div class="platform-card">
@@ -738,14 +794,19 @@ footer{
       </div>
 
       <div class="feature-list">
-        <span>Popular platform option</span>
-        <span>Stable mobile performance</span>
-        <span>Direct APK access</span>
+        <span>Version <b>1.0.4</b></span>
+        <span>Size <b>~20 MB</b></span>
+        <span>Welcome Bonus <b>₹500</b></span>
       </div>
 
-      <a class="platform-btn" href="https://d2jhwu6bwze8ki.cloudfront.net/apk/XX7.8xrlq.apk">
-        Download XX7 APK
-      </a>
+      <div class="platform-actions">
+        <a class="channel-btn" href="https://t.me/india66agentclub" target="_blank">
+          Official Channel
+        </a>
+        <a class="platform-btn" href="https://d2jhwu6bwze8ki.cloudfront.net/apk/XX7.8xrlq.apk">
+          Download APK
+        </a>
+      </div>
     </div>
 
     <div class="platform-card">
@@ -762,14 +823,19 @@ footer{
       </div>
 
       <div class="feature-list">
-        <span>Quick Android download</span>
-        <span>Regular platform updates</span>
-        <span>Mobile-friendly experience</span>
+        <span>Version <b>1.0.4</b></span>
+        <span>Size <b>~20 MB</b></span>
+        <span>Welcome Bonus <b>₹500</b></span>
       </div>
 
-      <a class="platform-btn" href="https://dvnm6cw04vasl.cloudfront.net/apk/66game.1qbxp.apk">
-        Download 66GAME APK
-      </a>
+      <div class="platform-actions">
+        <a class="channel-btn" href="https://t.me/india66agentclub" target="_blank">
+          Official Channel
+        </a>
+        <a class="platform-btn" href="https://dvnm6cw04vasl.cloudfront.net/apk/66game.1qbxp.apk">
+          Download APK
+        </a>
+      </div>
     </div>
 
   </section>
