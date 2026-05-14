@@ -659,58 +659,44 @@ footer{
 }
 
 .floating-main-btn{
-  position:relative;
-
   width:62px;
   height:62px;
+  min-width:62px;
+  min-height:62px;
 
   border:none;
   border-radius:50%;
+
+  cursor:pointer;
 
   display:flex;
   align-items:center;
   justify-content:center;
 
-  cursor:pointer;
+  padding:0;
+  flex-shrink:0;
 
+  font-size:26px;
+  line-height:1;
   color:#2b1600;
-  font-size:24px;
-  font-weight:900;
 
-  background:
-    linear-gradient(135deg,#f4c15d,#ff7a18,#f4c15d);
-
+  background:linear-gradient(135deg,#f4c15d,#ff7a18,#f4c15d);
   background-size:220% 220%;
 
   box-shadow:
-    0 0 18px rgba(244,193,93,.55),
-    0 0 42px rgba(255,122,24,.28),
-    0 14px 32px rgba(0,0,0,.32);
+    0 0 20px rgba(244,193,93,.55),
+    0 0 50px rgba(255,122,24,.28),
+    0 16px 34px rgba(0,0,0,.32);
 
   animation:
-    floatingGlow 2.4s ease-in-out infinite,
+    floatingGlow 2s ease-in-out infinite,
     floatingMove 3s linear infinite;
 
-  transition:
-    transform .28s ease,
-    box-shadow .28s ease;
+  transition:all .25s ease;
 }
 
-.floating-main-btn::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  border-radius:50%;
-  background:
-    linear-gradient(
-      120deg,
-      transparent,
-      rgba(255,255,255,.6),
-      transparent
-    );
-
-  transform:translateX(-120%);
-  animation:floatingShine 3s infinite;
+.floating-main-btn:hover{
+  transform:scale(1.08);
 }
 
 .floating-main-btn:hover{
