@@ -617,7 +617,7 @@ footer{
 <div class="floating-contact">
 
   <button class="floating-main-btn" id="floatingToggle">
-    ✨
+    💬
   </button>
 
   <div class="floating-menu" id="floatingMenu">
@@ -725,8 +725,8 @@ footer{
 
   transform:
     translateX(-50%)
-    translateY(16px)
-    scale(.92);
+    translateY(12px)
+    scale(.96);
 
   display:flex;
   flex-direction:column;
@@ -738,8 +738,8 @@ footer{
   pointer-events:none;
 
   transition:
-    opacity .3s ease,
-    transform .3s cubic-bezier(.22,1,.36,1);
+    opacity .28s ease,
+    transform .35s cubic-bezier(.22,1,.36,1);
 }
 
 .floating-menu.active{
@@ -773,7 +773,12 @@ footer{
 }
 
 .floating-item:hover{
-  transform:translateY(-3px) scale(1.08);
+  transform:
+    translateY(-3px)
+    scale(1.08);
+
+  box-shadow:
+    0 16px 28px rgba(0,0,0,.32);
 }
 
 .floating-item img{
