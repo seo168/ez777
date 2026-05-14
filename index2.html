@@ -657,22 +657,37 @@ footer{
 }
 
 .floating-main-btn{
-  width:64px;
-  height:64px;
+  width:62px;
+  height:62px;
+  min-width:62px;
+  min-height:62px;
   border:none;
   border-radius:50%;
   cursor:pointer;
-  font-size:28px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:0;
+  flex-shrink:0;
+
+  font-size:26px;
+  line-height:1;
   color:#2b1600;
+
   background:linear-gradient(135deg,#f4c15d,#ff7a18,#f4c15d);
   background-size:220% 220%;
+
   box-shadow:
     0 0 20px rgba(244,193,93,.55),
     0 0 50px rgba(255,122,24,.28),
     0 16px 34px rgba(0,0,0,.32);
+
   animation:
     floatingGlow 2s ease-in-out infinite,
     floatingMove 3s linear infinite;
+
   transition:all .25s ease;
 }
 
@@ -683,7 +698,7 @@ footer{
 .floating-menu{
   position:absolute;
   right:0;
-  bottom:78px;
+  bottom:82px;
   display:flex;
   flex-direction:column;
   gap:14px;
@@ -702,13 +717,23 @@ footer{
 .floating-item{
   width:56px;
   height:56px;
+  min-width:56px;
+  min-height:56px;
+
   border-radius:50%;
+
   display:flex;
   align-items:center;
   justify-content:center;
+
+  padding:0;
+  flex-shrink:0;
+
   color:white;
+
   box-shadow:
     0 10px 24px rgba(0,0,0,.28);
+
   transition:all .25s ease;
 }
 
@@ -717,8 +742,9 @@ footer{
 }
 
 .floating-item svg{
-  width:28px;
-  height:28px;
+  width:26px;
+  height:26px;
+  display:block;
 }
 
 .telegram-btn{
@@ -763,15 +789,19 @@ footer{
   }
 
   .floating-main-btn{
-    width:58px;
-    height:58px;
-    font-size:24px;
-  }
+  width:58px;
+  height:58px;
+  min-width:58px;
+  min-height:58px;
+  font-size:24px;
+}
 
-  .floating-item{
-    width:52px;
-    height:52px;
-  }
+.floating-item{
+  width:52px;
+  height:52px;
+  min-width:52px;
+  min-height:52px;
+}
 
   .floating-item svg{
     width:24px;
