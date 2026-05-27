@@ -2048,128 +2048,86 @@
   const status = document.getElementById('financeTrendStatus');
   if (!canvas) return;
 
-  const today = new Date().toLocaleDateString('zh-CN', {
-    timeZone: 'Asia/Yerevan',
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric'
-  }).replace(/\//g, '/');
+  function normalizeDate(v) {
+    return String(v || '').trim().replace(/-/g, '/').replace(/\./g, '/');
+  }
 
-  const selectedDate = document.getElementById('financeDateFilter')?.value?.trim();
+  function toNumber(v) {
+    const raw = String(v || '0').trim();
+    if (raw.includes('%')) return parseFloat(raw.replace('%', '')) || 0;
+    const n = parseFloat(raw) || 0;
+    return n > 0 && n <= 1 ? n * 100 : n;
+  }
 
-  const targetDate = selectedDate || today;
+  const allDates = [...new Set(dbTrend.map(r => normalizeDate(r['日期'])))].filter(Boolean);
+  const latestDate = allDates.sort().pop();
 
-  const latest = dbTrend.find(r => String(r['日期'] || '').trim() === targetDate) || null;
+  const inputDate = normalizeDate(document.getElementById('financeDateFilter')?.value);
+  const targetDate = inputDate || latestDate;
 
-  const labels = Array.from({length:24}, (_, i) => `${String(i).padStart(2,'0')}:00`);
-  const vals = latest ? labels.map(h => toNumber(latest[h])) : [];
+  const rows = dbTrend.filter(r => normalizeDate(r['日期']) === targetDate);
+
+  const labels = Array.from({length: 24}, (_, i) => `${String(i).padStart(2, '0')}:00`);
+
+  const colorMap = {
+    '66GAME':'#34d399',
+    'YYGAME':'#60a5fa',
+    'XX7':'#fbbf24',
+    'XX6':'#38bdf8',
+    'XX5':'#a78bfa',
+    'YY9':'#f87171'
+  };
+
+  const datasets = rows.map(r => {
+    const platform = String(r['平台'] || '').trim() || 'UNKNOWN';
+
+    const data = labels.map(hour => {
+      const h = parseInt(hour.split(':')[0], 10);
+      const keys = [hour, `${h}:00`, `${h}:00:00`, `${String(h).padStart(2,'0')}:00:00`];
+      const key = keys.find(k => r[k] !== undefined);
+      return toNumber(key ? r[key] : 0);
+    });
+
+    return {
+      label: platform,
+      data,
+      borderColor: colorMap[platform] || '#ffffff',
+      backgroundColor: colorMap[platform] || '#ffffff',
+      borderWidth: 2.5,
+      tension: 0.35,
+      pointRadius: 2,
+      fill: false
+    };
+  });
 
   if (financeTrendChart) financeTrendChart.destroy();
 
   financeTrendChart = new Chart(canvas.getContext('2d'), {
-    type:'line',
-    data:{
-      labels,
-      datasets:[{
-        data: vals.length ? vals : labels.map(() => 0),
-        borderWidth:2,
-        tension:.35,
-        pointRadius:2,
-        fill:false
-      }]
-    },
-    options:{
-      plugins:{legend:false},
-      maintainAspectRatio:false,
-      scales:{
-        x:{ticks:{color:'#9fb0cf',maxRotation:0,autoSkip:true,maxTicksLimit:8},grid:{color:'rgba(148,163,184,.08)'}},
-        y:{ticks:{color:'#9fb0cf',callback:v => v + '%'},grid:{color:'rgba(148,163,184,.08)'},beginAtZero:true}
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          display: true,
+          labels: { color: '#dbeafe', usePointStyle: true, padding: 18 }
+        }
+      },
+      scales: {
+        x: { ticks: { color: '#9fb0cf' }, grid: { color: 'rgba(148,163,184,.08)' } },
+        y: {
+          beginAtZero: true,
+          ticks: { color: '#9fb0cf', callback: v => v + '%' },
+          grid: { color: 'rgba(148,163,184,.08)' }
+        }
       }
     }
   });
 
-  if (status) status.innerText = latest ? targetDate : `没有找到 ${targetDate}`;
+  if (status) status.innerText = `${targetDate} (${rows.length} 平台)`;
 }
-
-    function renderFinanceTable(rows) {
-      const body = document.getElementById('financeReportBody');
-      const info = document.getElementById('financeTableInfo');
-      if (!body) return;
-      if (info) info.innerText = `${rows.length} 条数据`;
-      body.innerHTML = rows.length ? rows.map(r => {
-        const orders = toNumber(r['总订单']);
-        const success = toNumber(r['成功']);
-        const fail = r['失败'] !== undefined && r['失败'] !== '' ? toNumber(r['失败']) : Math.max(orders - success, 0);
-        const rate = r['成功率'] ? String(r['成功率']).replace('%','') : (orders ? success / orders * 100 : 0);
-        return `
-          <tr>
-            <td><span class="date-badge">${esc(r['日期'] || '-')}</span></td>
-            <td><b>${esc(r['平台'] || '-')}</b></td>
-            <td>${esc(r['通道'] || '-')}</td>
-            <td>${fmtNumber(orders)}</td>
-            <td>${fmtNumber(success)}</td>
-            <td>${fmtNumber(fail)}</td>
-            <td style="font-weight:900;color:#bfdbfe;">${fmtRate(toNumber(rate))}</td>
-            <td>${fmtMoney(toNumber(r['金额']))}</td>
-            <td>${r['金额占比'] ? esc(r['金额占比']) : '-'}</td>
-          </tr>
-        `;
-      }).join('') : `<tr class="finance-empty-row"><td colspan="9">暂无数据，请先连接 Google Sheet</td></tr>`;
-    }
-
-
-    function updateExtraPages() {
-      const absBody = document.getElementById('tbody-absent');
-      if (absBody) {
-        absBody.innerHTML = filtered.slice(0,15).map(r => `
-          <tr>
-            <td>#${esc(r[2] || '-')}</td>
-            <td style="font-weight:900;color:#fff;">${esc(r[3] || '-')}</td>
-            <td><span class="status-absent">未上班</span></td>
-            <td>${esc(r[5] || '-')}</td>
-            <td>${esc(r[8] || '-')}</td>
-          </tr>
-        `).join('');
-      }
-
-      const salBody = document.getElementById('tbody-salary');
-      if (salBody) {
-        salBody.innerHTML = filtered.slice(0,15).map(r => {
-          const p = dbPerf.find(x => cleanID(x[0]) === cleanID(r[2]));
-          const base = 500;
-          const bonus = p ? (parseInt(p[3] || 0) * 0.05) : 0;
-          return `
-            <tr>
-              <td>#${esc(r[2] || '-')}</td>
-              <td style="font-weight:900;color:#fff;">${esc(r[3] || '-')}</td>
-              <td>$ ${base}</td>
-              <td>$ ${bonus.toFixed(2)}</td>
-              <td style="font-weight:900;color:#fff;">$ ${(base + bonus).toFixed(2)}</td>
-            </tr>
-          `;
-        }).join('');
-      }
-
-      const mtBody = document.getElementById('tbody-maintenance');
-      if (mtBody) {
-        const rows = filtered.filter(r => {
-          const group = r[1] || "";
-          const team = r[9] || "";
-          return group.includes('维护') || team.includes('维护');
-        });
-        mtBody.innerHTML = rows.length ? rows.map(r => `
-          <tr>
-            <td><b>${esc(r[0] || '-')}</b></td>
-            <td><span class="tag-fn">${esc(r[1] || '-')}</span></td>
-            <td>${esc(r[9] || '-')}</td>
-            <td><span class="id-link" onclick="openDetail(${dbMaster.indexOf(r)})">#${esc(r[2] || '-')}</span></td>
-            <td style="font-weight:900;color:#fff;">${esc(r[3] || '-')}</td>
-            <td>${esc(r[5] || '-')}</td>
-            <td>${esc(r[8] || '-')}</td>
-          </tr>
-        `).join('') : `<tr><td colspan="7" style="padding:2rem;color:#9fb0cf;">暂无维护数据</td></tr>`;
-      }
-    }
 
     function openDetail(masterIdx) {
       const staff = dbMaster[masterIdx];
