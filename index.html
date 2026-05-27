@@ -771,7 +771,6 @@
       <div class="side-menu-title"><i class="fas fa-bars-staggered"></i> 子菜单</div>
       <div class="side-submenu">
         <button onclick="showPage('overview')" id="btn-overview" class="side-menu-btn active"><i class="fas fa-users"></i><span>员工数据</span></button>
-        <button onclick="showPage('performance')" id="btn-performance" class="side-menu-btn"><i class="fas fa-calendar-days"></i><span>排班数据</span></button>
         <button onclick="showPage('finance')" id="btn-finance" class="side-menu-btn"><i class="fas fa-coins"></i><span>财务数据</span></button>
         <button onclick="showPage('maintenance')" id="btn-maintenance" class="side-menu-btn"><i class="fas fa-screwdriver-wrench"></i><span>维护数据</span></button>
       </div>
@@ -872,9 +871,8 @@
             <tbody id="tbody"></tbody>
           </table>
         </div>
-      </div>
 
-      <div id="performance" class="page-content">
+      <div id="shift-section" class="shift-section-in-staff">
         <div class="filter-wrapper">
           <h3 style="font-weight:900;color:#eaf2ff;">
             <i class="fas fa-calendar-days"></i> 排班表
@@ -904,6 +902,8 @@
           <div class="shift-three-grid" id="shiftThreeGrid"></div>
           <div class="shift-list-view" id="shiftListView"></div>
         </div>
+      </div>
+
       </div>
 
       <div id="finance" class="page-content">
