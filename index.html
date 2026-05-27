@@ -693,6 +693,12 @@
       display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:1rem;padding:1.1rem 1.25rem;border-radius:24px;border:1px solid rgba(148,163,184,.20);background:linear-gradient(145deg,rgba(15,23,42,.78),rgba(30,41,59,.48));box-shadow:0 22px 58px rgba(0,0,0,.18);
     }
     .sub-page-title h3{font-size:1rem;font-weight:900;color:#eaf2ff;display:flex;align-items:center;gap:10px;margin:0}
+
+    .staff-inner-nav{
+      margin:1rem 0;
+    }
+    .staff-inner-page{display:none}
+    .staff-inner-page.active{display:block;animation:fadeIn .35s ease}
     .container{max-width:none;width:100%;margin:0;padding:0}
     @media(max-width:1000px){
       .app-layout{grid-template-columns:1fr;padding:1rem}
@@ -742,69 +748,6 @@
       .shift-member-compact{gap:5px}
       .shift-mini-tag{font-size:.61rem}
     }
-
-
-    .finance-dashboard{display:flex;flex-direction:column;gap:1rem}
-    .finance-filter-bar{
-      display:grid;
-      grid-template-columns:repeat(4,minmax(0,1fr));
-      gap:12px;
-      padding:1rem;
-      border-radius:24px;
-      border:1px solid rgba(148,163,184,.20);
-      background:linear-gradient(145deg,rgba(15,23,42,.78),rgba(30,41,59,.48));
-      box-shadow:0 22px 58px rgba(0,0,0,.18);
-    }
-    .finance-kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-    .finance-kpi-card{
-      position:relative;
-      overflow:hidden;
-      min-height:118px;
-      border-radius:24px;
-      padding:18px;
-      border:1px solid rgba(148,163,184,.20);
-      background:linear-gradient(145deg,rgba(15,23,42,.82),rgba(30,41,59,.48));
-      box-shadow:0 18px 46px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.04);
-    }
-    .finance-kpi-card::after{content:"";position:absolute;right:-30px;top:-38px;width:120px;height:120px;border-radius:999px;background:rgba(96,165,250,.10);filter:blur(3px)}
-    .finance-kpi-label{font-size:.68rem;font-weight:900;color:#9fb0cf;text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
-    .finance-kpi-value{font-size:1.38rem;font-weight:900;color:#fff;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .finance-kpi-sub{margin-top:8px;font-size:.72rem;font-weight:900;color:#bfdbfe;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .finance-platform-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-    .finance-platform-card{
-      border-radius:24px;
-      border:1px solid rgba(148,163,184,.20);
-      background:linear-gradient(145deg,rgba(15,23,42,.78),rgba(30,41,59,.46));
-      padding:16px;
-      box-shadow:0 16px 42px rgba(0,0,0,.16);
-    }
-    .finance-platform-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
-    .finance-platform-name{font-size:.96rem;font-weight:900;color:#fff;display:flex;align-items:center;gap:8px}
-    .finance-rate-badge{padding:5px 10px;border-radius:999px;background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.16);color:#bfdbfe;font-size:.72rem;font-weight:900}
-    .finance-mini-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-    .finance-mini-box{background:rgba(8,17,31,.36);border:1px solid rgba(148,163,184,.12);border-radius:16px;padding:10px 12px;min-width:0}
-    .finance-mini-k{font-size:.62rem;font-weight:900;color:#9fb0cf;text-transform:uppercase;margin-bottom:4px}
-    .finance-mini-v{font-size:.78rem;font-weight:900;color:#eaf2ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .finance-chart-panel,.finance-table-panel{
-      border-radius:26px;
-      padding:1.2rem;
-      border:1px solid rgba(148,163,184,.20);
-      background:linear-gradient(145deg,rgba(15,23,42,.78),rgba(30,41,59,.48));
-      box-shadow:0 22px 58px rgba(0,0,0,.18);
-      overflow:hidden;
-    }
-    .finance-chart-wrap{height:320px;position:relative}
-    .finance-table-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:1rem;flex-wrap:wrap}
-    .finance-table-scroll{overflow:auto;border-radius:20px;border:1px solid rgba(148,163,184,.16)}
-    .finance-data-table{min-width:1120px;width:100%;border-collapse:collapse}
-    .finance-data-table th,.finance-data-table td{text-align:center;padding:.82rem .85rem;white-space:nowrap}
-    .finance-data-table tbody tr:nth-child(even) td{background:rgba(30,41,59,.20)}
-    .finance-good{color:#bbf7d0;font-weight:900;background:rgba(52,211,153,.10);border:1px solid rgba(52,211,153,.12);padding:4px 9px;border-radius:999px}
-    .finance-mid{color:#fde68a;font-weight:900;background:rgba(251,191,36,.10);border:1px solid rgba(251,191,36,.12);padding:4px 9px;border-radius:999px}
-    .finance-low{color:#fecaca;font-weight:900;background:rgba(248,113,113,.10);border:1px solid rgba(248,113,113,.12);padding:4px 9px;border-radius:999px}
-    @media(max-width:1200px){.finance-kpi-grid,.finance-platform-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.finance-filter-bar{grid-template-columns:repeat(2,minmax(0,1fr))}}
-    @media(max-width:700px){.finance-kpi-grid,.finance-platform-grid,.finance-filter-bar{grid-template-columns:1fr}.finance-chart-wrap{height:260px}}
-
   </style>
 </head>
 
@@ -834,8 +777,7 @@
       <div class="side-menu-title"><i class="fas fa-bars-staggered"></i> 子菜单</div>
       <div class="side-submenu">
         <button onclick="showPage('overview')" id="btn-overview" class="side-menu-btn active"><i class="fas fa-users"></i><span>员工数据</span></button>
-        <button onclick="showPage('performance')" id="btn-performance" class="side-menu-btn"><i class="fas fa-calendar-days"></i><span>排班数据</span></button>
-        <button onclick="showPage('finance')" id="btn-finance" class="side-menu-btn"><i class="fas fa-chart-line"></i><span>财务报表</span></button>
+        <button onclick="showPage('finance')" id="btn-finance" class="side-menu-btn"><i class="fas fa-coins"></i><span>财务数据</span></button>
         <button onclick="showPage('maintenance')" id="btn-maintenance" class="side-menu-btn"><i class="fas fa-screwdriver-wrench"></i><span>维护数据</span></button>
       </div>
     </aside>
@@ -906,6 +848,13 @@
         </div>
       </div>
 
+      <div class="nav-menu staff-inner-nav">
+        <button onclick="showStaffTab('staff-list-section')" id="staffTab-list" class="menu-btn active"><i class="fas fa-layer-group"></i> 总览</button>
+        <button onclick="showStaffTab('shift-section')" id="staffTab-shift" class="menu-btn"><i class="fas fa-calendar-days"></i> 排班</button>
+      </div>
+
+      <div id="staff-list-section" class="staff-inner-page active">
+
         <div class="filter-wrapper">
           <div class="filter-grid">
             <div class="filter-group"><label>搜索姓名/ID</label><input type="text" id="searchName" placeholder="请输入姓名或 ID..."></div>
@@ -937,7 +886,7 @@
         </div>
       </div>
 
-      <div id="performance" class="page-content">
+      <div id="shift-section" class="staff-inner-page shift-section-in-staff">
         <div class="filter-wrapper">
           <h3 style="font-weight:900;color:#eaf2ff;">
             <i class="fas fa-calendar-days"></i> 排班表
@@ -969,43 +918,16 @@
         </div>
       </div>
 
+      </div>
+
       <div id="finance" class="page-content">
-        <div class="sub-page-title"><h3><i class="fas fa-chart-line"></i> 财务报表</h3></div>
-
-        <div class="finance-dashboard">
-          <div class="finance-filter-bar">
-            <div class="filter-group"><label>日期</label><select id="financeDateFilter" onchange="renderFinanceReport()"></select></div>
-            <div class="filter-group"><label>平台</label><select id="financePlatformFilter" onchange="renderFinanceReport()"></select></div>
-            <div class="filter-group"><label>通道</label><select id="financeChannelFilter" onchange="renderFinanceReport()"></select></div>
-            <div class="filter-group"><label>搜索</label><input id="financeSearchInput" type="text" placeholder="搜索平台 / 通道..." oninput="renderFinanceReport()"></div>
-          </div>
-
-          <div class="finance-kpi-grid">
-            <div class="finance-kpi-card"><div class="finance-kpi-label"><i class="fas fa-percent"></i> 平均成功率</div><div class="finance-kpi-value" id="financeKpiRate">0%</div><div class="finance-kpi-sub" id="financeKpiRateSub">当前筛选</div></div>
-            <div class="finance-kpi-card"><div class="finance-kpi-label"><i class="fas fa-list-ol"></i> 总订单</div><div class="finance-kpi-value" id="financeKpiOrders">0</div><div class="finance-kpi-sub">唤醒 + 扫码 + 原生</div></div>
-            <div class="finance-kpi-card"><div class="finance-kpi-label"><i class="fas fa-sack-dollar"></i> 总金额</div><div class="finance-kpi-value" id="financeKpiAmount">0</div><div class="finance-kpi-sub" id="financeKpiAmountSub">成功金额汇总</div></div>
-            <div class="finance-kpi-card"><div class="finance-kpi-label"><i class="fas fa-crown"></i> 最佳平台</div><div class="finance-kpi-value" id="financeKpiBest">-</div><div class="finance-kpi-sub" id="financeKpiBestSub">按平均成功率</div></div>
-          </div>
-
-          <div class="finance-platform-grid" id="financePlatformCards"></div>
-
-          <div class="finance-chart-panel">
-            <div class="section-title"><i class="fas fa-chart-area"></i> 24小时成功率趋势</div>
-            <div class="finance-chart-wrap"><canvas id="financeTrendChart"></canvas></div>
-          </div>
-
-          <div class="finance-table-panel">
-            <div class="finance-table-tools">
-              <div class="section-title" style="margin-bottom:0;"><i class="fas fa-table"></i> 财务明细数据</div>
-              <button class="menu-btn" style="padding:9px 16px;min-width:auto;" onclick="downloadFinanceCSV()"><i class="fas fa-download"></i> 下载CSV</button>
-            </div>
-            <div class="finance-table-scroll">
-              <table class="finance-data-table">
-                <thead><tr><th>日期</th><th>平台</th><th>通道</th><th>总订单</th><th>成功</th><th>金额</th><th>成功率</th><th>金额占比</th><th>平均成功率</th></tr></thead>
-                <tbody id="financeDetailBody"></tbody>
-              </table>
-            </div>
-          </div>
+        <div class="sub-page-title"><h3><i class="fas fa-coins"></i> 财务数据</h3></div>
+        <div class="table-container">
+          <div class="table-head-bar"><span><i class="fas fa-money-bill-wave"></i> 财务数据列表</span></div>
+          <table>
+            <thead><tr><th>ID</th><th>姓名</th><th>基础金额</th><th>绩效金额</th><th>合计</th></tr></thead>
+            <tbody id="tbody-salary"></tbody>
+          </table>
         </div>
       </div>
 
@@ -1234,7 +1156,7 @@
 
     function showPage(pageId) {
       document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.side-menu-btn,.nav-menu .menu-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.side-menu-btn').forEach(b => b.classList.remove('active'));
 
       const page = document.getElementById(pageId);
       const btn = document.getElementById('btn-' + pageId);
@@ -1244,6 +1166,21 @@
 
       renderShiftPageTables();
       updateExtraPages();
+    }
+
+    function showStaffTab(tabId) {
+      document.querySelectorAll('.staff-inner-page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.staff-inner-nav .menu-btn').forEach(b => b.classList.remove('active'));
+
+      const page = document.getElementById(tabId);
+      if (page) page.classList.add('active');
+
+      if (tabId === 'shift-section') {
+        document.getElementById('staffTab-shift')?.classList.add('active');
+        renderShiftPageTables();
+      } else {
+        document.getElementById('staffTab-list')?.classList.add('active');
+      }
     }
 
     function setShiftView(view) {
@@ -1730,8 +1667,6 @@
         }).join('');
       }
 
-      renderFinanceReport();
-
       const mtBody = document.getElementById('tbody-maintenance');
       if (mtBody) {
         const rows = filtered.filter(r => {
@@ -1751,158 +1686,6 @@
           </tr>
         `).join('') : `<tr><td colspan="7" style="padding:2rem;color:#9fb0cf;">暂无维护数据</td></tr>`;
       }
-    }
-
-
-
-    const financeRows = [
-      {date:'2026/5/25',platform:'66GAME',channel:'唤醒',orders:66951,success:28210,amount:7566500,rate:42.14,share:89.45,avg:40.21},
-      {date:'2026/5/25',platform:'66GAME',channel:'扫码',orders:5852,success:3042,amount:892300,rate:51.98,share:0,avg:40.21},
-      {date:'2026/5/25',platform:'YYGAME',channel:'唤醒',orders:42149,success:18215,amount:4517900,rate:43.22,share:88.42,avg:40.54},
-      {date:'2026/5/25',platform:'YYGAME',channel:'扫码',orders:3941,success:1935,amount:591800,rate:49.10,share:0,avg:40.54},
-      {date:'2026/5/25',platform:'XX7',channel:'唤醒',orders:57628,success:25054,amount:5841900,rate:43.48,share:90.57,avg:40.88},
-      {date:'2026/5/25',platform:'XX7',channel:'扫码',orders:4423,success:2292,amount:608300,rate:51.82,share:0,avg:40.88},
-      {date:'2026/5/25',platform:'XX6',channel:'唤醒',orders:45570,success:18897,amount:4486900,rate:41.11,share:90.69,avg:38.42},
-      {date:'2026/5/25',platform:'XX6',channel:'扫码',orders:3696,success:1837,amount:460700,rate:49.70,share:0,avg:38.42},
-      {date:'2026/5/25',platform:'XX5',channel:'唤醒',orders:26769,success:11672,amount:2548600,rate:43.60,share:88.09,avg:40.42},
-      {date:'2026/5/25',platform:'XX5',channel:'扫码',orders:2743,success:1400,amount:344600,rate:51.04,share:0,avg:40.42},
-      {date:'2026/5/25',platform:'YY9',channel:'唤醒',orders:26438,success:11008,amount:2393000,rate:41.64,share:88.24,avg:38.75},
-      {date:'2026/5/25',platform:'YY9',channel:'扫码',orders:2603,success:1343,amount:318900,rate:51.59,share:0,avg:38.75},
-      {date:'2026/5/26',platform:'66GAME',channel:'唤醒',orders:70305,success:28623,amount:7624499.98,rate:40.71,share:88.79,avg:39.42},
-      {date:'2026/5/26',platform:'YYGAME',channel:'唤醒',orders:42621,success:17332,amount:4136000,rate:40.67,share:86.62,avg:40.25},
-      {date:'2026/5/26',platform:'XX7',channel:'唤醒',orders:59947,success:24248,amount:5682900,rate:40.45,share:90.01,avg:39.25},
-      {date:'2026/5/26',platform:'XX6',channel:'唤醒',orders:45949,success:18230,amount:4245900,rate:39.67,share:88.96,avg:38.92},
-      {date:'2026/5/26',platform:'XX5',channel:'唤醒',orders:26404,success:10984,amount:2354500,rate:41.60,share:88.48,avg:41.67},
-      {date:'2026/5/26',platform:'YY9',channel:'唤醒',orders:30647,success:11847,amount:2418100,rate:38.66,share:88.14,avg:38.92}
-    ];
-
-    const financeHourly = [
-      {date:'2026/4/13',values:[33,37,33,40,40,26,39,40,46,46,46,43,45,47,44,44,47,45,42,44,39,35,37,42]},
-      {date:'2026/4/14',values:[35,38,36,37,41,41,42,34,44,44,45,41,43,44,42,42,43,45,43,45,39,36,39,35]},
-      {date:'2026/4/15',values:[32,39,28,35,29,38,37,40,46,44,45,43,44,47,42,45,43,46,43,40,34,41,42,44]},
-      {date:'2026/4/16',values:[42,42,42,45,45,41,43,43,40,36,44,44,45,45,42,45,43,45,37,44,30,39,41,39]},
-      {date:'2026/4/17',values:[39,31,33,30,36,39,45,38,46,45,46,42,43,44,42,42,43,45,47,37,40,38,41,41]},
-      {date:'2026/4/18',values:[37,39,31,37,44,37,36,43,47,46,46,45,43,45,42,42,40,43,46,35,37,40,36,34]},
-      {date:'2026/4/19',values:[40,35,26,36,31,40,36,41,44,44,43,44,46,46,45,45,43,43,42,38,45,39,40,40]}
-    ];
-
-    let financeTrendChart = null;
-    let financeInitialized = false;
-
-    function initFinanceFilters() {
-      if (financeInitialized) return;
-      financeInitialized = true;
-      const fill = (id, values) => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.innerHTML = `<option value="">全部</option>` + values.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join('');
-      };
-      fill('financeDateFilter', [...new Set(financeRows.map(r => r.date))]);
-      fill('financePlatformFilter', [...new Set(financeRows.map(r => r.platform))]);
-      fill('financeChannelFilter', [...new Set(financeRows.map(r => r.channel))]);
-    }
-
-    function getFinanceFilteredRows() {
-      const d = document.getElementById('financeDateFilter')?.value || '';
-      const p = document.getElementById('financePlatformFilter')?.value || '';
-      const c = document.getElementById('financeChannelFilter')?.value || '';
-      const q = String(document.getElementById('financeSearchInput')?.value || '').trim().toLowerCase();
-      return financeRows.filter(r => (!d || r.date === d) && (!p || r.platform === p) && (!c || r.channel === c) && (!q || `${r.platform} ${r.channel} ${r.date}`.toLowerCase().includes(q)));
-    }
-
-    function fmtNum(n) { return Number(n || 0).toLocaleString('en-US'); }
-    function fmtMoney(n) { return '₹ ' + Number(n || 0).toLocaleString('en-US', {maximumFractionDigits:0}); }
-    function rateClass(v) { return v >= 42 ? 'finance-good' : v >= 40 ? 'finance-mid' : 'finance-low'; }
-
-    function renderFinanceReport() {
-      initFinanceFilters();
-      const rows = getFinanceFilteredRows();
-      const orders = rows.reduce((s,r)=>s+r.orders,0);
-      const success = rows.reduce((s,r)=>s+r.success,0);
-      const amount = rows.reduce((s,r)=>s+r.amount,0);
-      const rate = orders ? success / orders * 100 : 0;
-
-      const byPlatform = {};
-      rows.forEach(r => {
-        byPlatform[r.platform] ||= {platform:r.platform,orders:0,success:0,amount:0,avgList:[],wake:null,scan:null,nativeRate:0};
-        byPlatform[r.platform].orders += r.orders;
-        byPlatform[r.platform].success += r.success;
-        byPlatform[r.platform].amount += r.amount;
-        byPlatform[r.platform].avgList.push(r.avg);
-        if (r.channel === '唤醒') byPlatform[r.platform].wake = r.rate;
-        if (r.channel === '扫码') byPlatform[r.platform].scan = r.rate;
-        if (r.channel === '原生') byPlatform[r.platform].nativeRate = r.rate;
-      });
-      const platforms = Object.values(byPlatform).map(x => ({...x,rate:x.orders ? x.success/x.orders*100 : 0,avg:x.avgList.length ? x.avgList.reduce((a,b)=>a+b,0)/x.avgList.length : 0})).sort((a,b)=>b.rate-a.rate);
-      const best = platforms[0];
-
-      const setText = (id, val) => { const el=document.getElementById(id); if(el) el.innerText=val; };
-      setText('financeKpiRate', rate.toFixed(2)+'%');
-      setText('financeKpiOrders', fmtNum(orders));
-      setText('financeKpiAmount', fmtMoney(amount));
-      setText('financeKpiBest', best ? best.platform : '-');
-      setText('financeKpiBestSub', best ? `成功率 ${best.rate.toFixed(2)}%` : '按平均成功率');
-
-      const cards = document.getElementById('financePlatformCards');
-      if (cards) {
-        cards.innerHTML = platforms.map(p => `
-          <div class="finance-platform-card">
-            <div class="finance-platform-head">
-              <div class="finance-platform-name"><i class="fas fa-server" style="color:#93c5fd"></i> ${esc(p.platform)}</div>
-              <div class="finance-rate-badge">${p.rate.toFixed(2)}%</div>
-            </div>
-            <div class="finance-mini-grid">
-              <div class="finance-mini-box"><div class="finance-mini-k">唤醒</div><div class="finance-mini-v">${p.wake == null ? '-' : p.wake.toFixed(2)+'%'}</div></div>
-              <div class="finance-mini-box"><div class="finance-mini-k">扫码</div><div class="finance-mini-v">${p.scan == null ? '-' : p.scan.toFixed(2)+'%'}</div></div>
-              <div class="finance-mini-box"><div class="finance-mini-k">总订单</div><div class="finance-mini-v">${fmtNum(p.orders)}</div></div>
-              <div class="finance-mini-box"><div class="finance-mini-k">金额</div><div class="finance-mini-v">${fmtMoney(p.amount)}</div></div>
-            </div>
-          </div>
-        `).join('') || `<div class="stat-empty">暂无财务数据</div>`;
-      }
-
-      const body = document.getElementById('financeDetailBody');
-      if (body) {
-        body.innerHTML = rows.map(r => `
-          <tr>
-            <td>${esc(r.date)}</td><td><b>${esc(r.platform)}</b></td><td>${esc(r.channel)}</td><td>${fmtNum(r.orders)}</td><td>${fmtNum(r.success)}</td><td>${fmtMoney(r.amount)}</td>
-            <td><span class="${rateClass(r.rate)}">${r.rate.toFixed(2)}%</span></td><td>${r.share.toFixed(2)}%</td><td>${r.avg.toFixed(2)}%</td>
-          </tr>
-        `).join('') || `<tr><td colspan="9" style="padding:2rem;color:#9fb0cf;">暂无财务数据</td></tr>`;
-      }
-
-      renderFinanceTrendChart();
-    }
-
-    function renderFinanceTrendChart() {
-      const canvas = document.getElementById('financeTrendChart');
-      if (!canvas || typeof Chart === 'undefined') return;
-      const labels = Array.from({length:24}, (_,i)=>`${i}:00`);
-      const latest = financeHourly[financeHourly.length - 1];
-      if (financeTrendChart) financeTrendChart.destroy();
-      financeTrendChart = new Chart(canvas.getContext('2d'), {
-        type:'line',
-        data:{labels,datasets:[{label:latest.date + ' 成功率',data:latest.values,tension:.38,fill:true,borderWidth:3,pointRadius:3,backgroundColor:'rgba(96,165,250,.10)',borderColor:'rgba(96,165,250,.95)',pointBackgroundColor:'rgba(191,219,254,.95)'}]},
-        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#dbeafe',font:{weight:'bold'}}}},scales:{x:{ticks:{color:'#9fb0cf'},grid:{color:'rgba(148,163,184,.08)'}},y:{ticks:{color:'#9fb0cf',callback:v=>v+'%'},grid:{color:'rgba(148,163,184,.08)'}}}}
-      });
-    }
-
-    function downloadFinanceCSV() {
-      const rows = getFinanceFilteredRows();
-      const header = ['日期','平台','通道','总订单','成功','金额','成功率','金额占比','平均成功率'];
-      const csv = [header, ...rows.map(r=>[r.date,r.platform,r.channel,r.orders,r.success,r.amount,r.rate+'%',r.share+'%',r.avg+'%'])]
-        .map(row => row.map(v => `"${String(v).replace(/"/g,'""')}"`).join(','))
-        .join('
-');
-      const blob = new Blob(['﻿'+csv], {type:'text/csv;charset=utf-8;'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `HGX_财务报表_${new Date().toISOString().slice(0,10)}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
     }
 
     function openDetail(masterIdx) {
