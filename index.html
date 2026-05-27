@@ -614,23 +614,156 @@
     .stat-empty{padding:2rem;text-align:center;color:#9fb0cf;font-weight:900}
 
 
-    .finance-dashboard{display:flex;flex-direction:column;gap:1rem}
-    .finance-kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-    .finance-kpi-card{background:linear-gradient(145deg,rgba(15,23,42,.78),rgba(30,41,59,.48));border:1px solid rgba(148,163,184,.20);border-radius:22px;padding:18px;box-shadow:0 18px 46px rgba(0,0,0,.16);min-height:110px}
-    .finance-kpi-label{font-size:.66rem;font-weight:900;color:#9fb0cf;text-transform:uppercase;letter-spacing:.35px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
-    .finance-kpi-value{font-size:1.35rem;font-weight:900;color:#fff;line-height:1.2}
-    .finance-kpi-sub{margin-top:8px;font-size:.7rem;font-weight:800;color:#7f91ad}
-    .finance-panel{background:linear-gradient(145deg,rgba(15,23,42,.78),rgba(30,41,59,.48));border:1px solid rgba(148,163,184,.20);border-radius:24px;padding:1.15rem;box-shadow:0 22px 58px rgba(0,0,0,.18);overflow:hidden}
-    .finance-panel-title{font-size:1rem;font-weight:900;color:#eaf2ff;display:flex;align-items:center;gap:10px;margin-bottom:1rem}
-    .finance-filter-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px}
-    .finance-empty{min-height:160px;border:1px dashed rgba(148,163,184,.22);border-radius:18px;display:flex;align-items:center;justify-content:center;text-align:center;color:#9fb0cf;font-size:.82rem;font-weight:900;background:rgba(8,17,31,.28);padding:1.2rem}
-    .finance-chart-box{height:300px;border:1px solid rgba(148,163,184,.14);border-radius:20px;background:rgba(8,17,31,.30);padding:1rem}
-    .finance-table-wrap{overflow-x:auto;border-radius:18px;border:1px solid rgba(148,163,184,.14)}
-    .finance-table{min-width:980px;width:100%;border-collapse:collapse}
-    .finance-table th,.finance-table td{padding:.9rem .8rem;text-align:center;white-space:nowrap}
-    .finance-note{font-size:.74rem;font-weight:800;color:#8fa2bd;line-height:1.7}
-    @media(max-width:1100px){.finance-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.finance-filter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-    @media(max-width:560px){.finance-kpi-grid,.finance-filter-grid{grid-template-columns:1fr}.finance-chart-box{height:240px}}
+    /* 财务报表 Dashboard - Google Sheet Ready */
+    .finance-empty-note{
+      margin-bottom:1rem;
+      padding:14px 16px;
+      border-radius:18px;
+      border:1px dashed rgba(147,197,253,.28);
+      background:rgba(96,165,250,.07);
+      color:#bfdbfe;
+      font-size:.78rem;
+      font-weight:900;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .finance-kpi-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:12px;
+      margin-bottom:1rem;
+    }
+    .finance-kpi-card{
+      min-height:116px;
+      padding:16px;
+      border-radius:22px;
+      border:1px solid rgba(148,163,184,.18);
+      background:linear-gradient(145deg,rgba(15,23,42,.76),rgba(30,41,59,.42));
+      box-shadow:0 18px 46px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.035);
+      overflow:hidden;
+      position:relative;
+    }
+    .finance-kpi-card::after{
+      content:"";
+      position:absolute;
+      right:-34px;
+      top:-34px;
+      width:92px;
+      height:92px;
+      border-radius:999px;
+      background:rgba(96,165,250,.10);
+      pointer-events:none;
+    }
+    .finance-kpi-label{
+      font-size:.66rem;
+      font-weight:900;
+      color:#9fb0cf;
+      text-transform:uppercase;
+      letter-spacing:.4px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom:10px;
+    }
+    .finance-kpi-label i{color:#93c5fd}
+    .finance-kpi-value{
+      font-size:1.38rem;
+      font-weight:900;
+      color:#fff;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .finance-kpi-sub{
+      margin-top:5px;
+      font-size:.68rem;
+      font-weight:900;
+      color:#9fb0cf;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .finance-panel-grid{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:1rem;
+      margin-bottom:1rem;
+    }
+    .finance-panel{
+      padding:1.15rem;
+      border-radius:24px;
+      border:1px solid rgba(148,163,184,.20);
+      background:linear-gradient(145deg,rgba(15,23,42,.78),rgba(30,41,59,.48));
+      box-shadow:0 22px 58px rgba(0,0,0,.18);
+      min-width:0;
+    }
+    .finance-panel-title{
+      font-size:.9rem;
+      font-weight:900;
+      color:#eaf2ff;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:1rem;
+    }
+    .finance-panel-title span{display:flex;align-items:center;gap:9px}
+    .finance-panel-title i{color:#93c5fd}
+    .finance-chart-box{height:260px;position:relative}
+    .finance-platform-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+    }
+    .finance-platform-card{
+      border-radius:18px;
+      padding:13px;
+      border:1px solid rgba(148,163,184,.16);
+      background:rgba(8,17,31,.34);
+      min-height:104px;
+    }
+    .finance-platform-name{font-size:.86rem;font-weight:900;color:#fff;margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .finance-platform-row{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:.68rem;font-weight:900;color:#9fb0cf;margin-top:5px}
+    .finance-platform-row b{color:#dbeafe}
+    .finance-filter-grid{
+      display:grid;
+      grid-template-columns:1.2fr 1fr 1fr auto;
+      gap:12px;
+      align-items:end;
+    }
+    .finance-action-btn{
+      min-height:43px;
+      padding:10px 16px;
+      border-radius:13px;
+      border:1px solid rgba(148,163,184,.20);
+      background:linear-gradient(135deg,#2563eb,#475569);
+      color:#fff;
+      font-size:.78rem;
+      font-weight:900;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      white-space:nowrap;
+    }
+    .finance-table-wrap{overflow-x:auto}
+    .finance-table-wrap table{min-width:980px}
+    .finance-empty-row td{
+      padding:2rem!important;
+      color:#9fb0cf;
+      font-weight:900;
+      text-align:center!important;
+    }
+    @media(max-width:1200px){
+      .finance-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .finance-panel-grid{grid-template-columns:1fr}
+    }
+    @media(max-width:700px){
+      .finance-kpi-grid,.finance-platform-grid,.finance-filter-grid{grid-template-columns:1fr}
+      .finance-chart-box{height:220px}
+    }
 
 
     .app-layout{
@@ -796,7 +929,7 @@
       <div class="side-menu-title"><i class="fas fa-bars-staggered"></i> 子菜单</div>
       <div class="side-submenu">
         <button onclick="showPage('overview')" id="btn-overview" class="side-menu-btn active"><i class="fas fa-users"></i><span>员工数据</span></button>
-        <button onclick="showPage('finance')" id="btn-finance" class="side-menu-btn"><i class="fas fa-coins"></i><span>财务报表</span></button>
+        <button onclick="showPage('finance')" id="btn-finance" class="side-menu-btn"><i class="fas fa-coins"></i><span>财务数据</span></button>
         <button onclick="showPage('maintenance')" id="btn-maintenance" class="side-menu-btn"><i class="fas fa-screwdriver-wrench"></i><span>维护数据</span></button>
       </div>
     </aside>
@@ -942,55 +1075,78 @@
       <div id="finance" class="page-content">
         <div class="sub-page-title">
           <h3><i class="fas fa-chart-line"></i> 财务报表</h3>
+          <button class="finance-action-btn" onclick="loadFinanceData()"><i class="fas fa-rotate"></i> 刷新数据</button>
         </div>
 
-        <div class="finance-dashboard">
+        <div class="finance-empty-note" id="financeSheetNotice">
+          <i class="fas fa-circle-info"></i>
+          <span>这里已经预留 Google Sheet 数据接口。你只需要把 URL_FINANCE / URL_TREND 换成对应 sheet 的 CSV 链接即可。</span>
+        </div>
+
+        <div class="finance-kpi-grid">
+          <div class="finance-kpi-card">
+            <div class="finance-kpi-label"><i class="fas fa-percent"></i> 总成功率</div>
+            <div class="finance-kpi-value" id="financeKpiRate">-</div>
+            <div class="finance-kpi-sub">成功 ÷ 总订单</div>
+          </div>
+          <div class="finance-kpi-card">
+            <div class="finance-kpi-label"><i class="fas fa-receipt"></i> 今日总订单</div>
+            <div class="finance-kpi-value" id="financeKpiOrders">-</div>
+            <div class="finance-kpi-sub">当前筛选范围</div>
+          </div>
+          <div class="finance-kpi-card">
+            <div class="finance-kpi-label"><i class="fas fa-wallet"></i> 总金额</div>
+            <div class="finance-kpi-value" id="financeKpiAmount">-</div>
+            <div class="finance-kpi-sub">金额汇总</div>
+          </div>
+          <div class="finance-kpi-card">
+            <div class="finance-kpi-label"><i class="fas fa-crown"></i> 最佳平台</div>
+            <div class="finance-kpi-value" id="financeKpiTopPlatform">-</div>
+            <div class="finance-kpi-sub">按成功率排序</div>
+          </div>
+        </div>
+
+        <div class="filter-wrapper">
+          <div class="finance-filter-grid">
+            <div class="filter-group"><label>日期</label><input type="text" id="financeDateFilter" placeholder="例如 2026/05/27" oninput="renderFinanceReport()"></div>
+            <div class="filter-group"><label>平台</label><select id="financePlatformFilter" onchange="renderFinanceReport()"><option value="">全部</option></select></div>
+            <div class="filter-group"><label>通道</label><select id="financeChannelFilter" onchange="renderFinanceReport()"><option value="">全部</option></select></div>
+            <button class="finance-action-btn" onclick="resetFinanceFilters()"><i class="fas fa-filter-circle-xmark"></i> 重置</button>
+          </div>
+        </div>
+
+        <div class="finance-panel-grid">
           <div class="finance-panel">
-            <div class="finance-panel-title"><i class="fas fa-filter"></i> 筛选条件</div>
-            <div class="finance-filter-grid">
-              <div class="filter-group"><label>日期</label><input type="date" id="financeDate"></div>
-              <div class="filter-group"><label>平台</label><select id="financePlatform"><option value="">全部</option></select></div>
-              <div class="filter-group"><label>通道</label><select id="financeChannel"><option value="">全部</option></select></div>
-              <div class="filter-group"><label>数据来源</label><select id="financeSource"><option value="">Google Sheet 待连接</option></select></div>
+            <div class="finance-panel-title"><span><i class="fas fa-chart-area"></i> 24小时成功率趋势</span><small id="financeTrendStatus">等待数据</small></div>
+            <div class="finance-chart-box"><canvas id="financeTrendChart"></canvas></div>
+          </div>
+          <div class="finance-panel">
+            <div class="finance-panel-title"><span><i class="fas fa-layer-group"></i> 平台成功率卡片</span><small id="financePlatformStatus">等待数据</small></div>
+            <div class="finance-platform-grid" id="financePlatformCards">
+              <div class="finance-platform-card">
+                <div class="finance-platform-name">暂无数据</div>
+                <div class="finance-platform-row"><span>状态</span><b>等待 Google Sheet</b></div>
+                <div class="finance-platform-row"><span>提示</span><b>填入 URL_FINANCE</b></div>
+              </div>
             </div>
           </div>
+        </div>
 
-          <div class="finance-kpi-grid">
-            <div class="finance-kpi-card"><div class="finance-kpi-label"><i class="fas fa-percent"></i> 平均成功率</div><div class="finance-kpi-value" id="financeKpiRate">--</div><div class="finance-kpi-sub">等待 Google Sheet 数据</div></div>
-            <div class="finance-kpi-card"><div class="finance-kpi-label"><i class="fas fa-list-ol"></i> 总订单</div><div class="finance-kpi-value" id="financeKpiOrders">--</div><div class="finance-kpi-sub">等待 Google Sheet 数据</div></div>
-            <div class="finance-kpi-card"><div class="finance-kpi-label"><i class="fas fa-sack-dollar"></i> 总金额</div><div class="finance-kpi-value" id="financeKpiAmount">--</div><div class="finance-kpi-sub">等待 Google Sheet 数据</div></div>
-            <div class="finance-kpi-card"><div class="finance-kpi-label"><i class="fas fa-trophy"></i> 最佳平台</div><div class="finance-kpi-value" id="financeKpiTop">--</div><div class="finance-kpi-sub">等待 Google Sheet 数据</div></div>
+        <div class="table-container finance-table-wrap">
+          <div class="table-head-bar">
+            <span><i class="fas fa-table"></i> 财务详细数据表</span>
+            <span id="financeTableInfo" style="font-size:.76rem;font-weight:900;color:#9fb0cf;">0 条数据</span>
           </div>
-
-          <div class="finance-panel">
-            <div class="finance-panel-title"><i class="fas fa-chart-area"></i> 24小时成功率趋势</div>
-            <div class="finance-chart-box"><canvas id="financeHourlyChart"></canvas></div>
-          </div>
-
-          <div class="finance-panel">
-            <div class="finance-panel-title"><i class="fas fa-table-cells"></i> 平台 / 通道明细</div>
-            <div class="finance-table-wrap">
-              <table class="finance-table">
-                <thead>
-                  <tr>
-                    <th>日期</th><th>平台</th><th>通道</th><th>总订单</th><th>成功</th><th>金额</th><th>成功率</th><th>金额占比</th><th>平均成功率</th>
-                  </tr>
-                </thead>
-                <tbody id="financeReportBody">
-                  <tr><td colspan="9"><div class="finance-empty">这里暂时不填数据，后续连接 Google Sheet 后自动显示。</div></td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div class="finance-panel">
-            <div class="finance-panel-title"><i class="fas fa-circle-info"></i> Google Sheet 预留字段</div>
-            <div class="finance-note">
-              建议 Sheet 名称：财务报表。<br>
-              建议表头：日期、平台、通道、总订单、成功、金额、成功率、金额占比、平均成功率。<br>
-              现在页面只保留结构，不写死任何财务数据，方便后续直接接 Google Sheet CSV/API。
-            </div>
-          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>日期</th><th>平台</th><th>通道</th><th>总订单</th><th>成功</th><th>失败</th><th>成功率</th><th>金额</th><th>金额占比</th>
+              </tr>
+            </thead>
+            <tbody id="financeReportBody">
+              <tr class="finance-empty-row"><td colspan="9">暂无数据，请先连接 Google Sheet</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -1058,8 +1214,23 @@
     const URL_MASTER = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRTWdis5deT7Foc0n9WvjY45n-Yl5oujgHKUKo8yncqAiMfxi42VZEh3OezV3BSozJsY_b9jexKArco/pub?gid=0&output=csv";
     const URL_PERF = "https://docs.google.com/spreadsheets/d/1nVAlnCEtdkhwC52l7Vo9Q1ywfpPUBR4bscYzMpH4sLg/export?format=csv&gid=1680695165";
 
+    /*
+      财务报表 Google Sheet 设置：
+      1. 在同一个 Google Spreadsheet 里面新建 sheet/tab：财务报表、24小时趋势
+      2. File → Share → Publish to web
+      3. 把下面两个链接换成对应 gid 的 CSV 链接
+      4. 没有连接前保持空字符串，页面会显示“暂无数据”
+
+      财务报表建议表头：日期, 平台, 通道, 总订单, 成功, 失败, 成功率, 金额, 金额占比
+      24小时趋势建议表头：日期, 00:00, 01:00, 02:00 ... 23:00
+    */
+    const URL_FINANCE = "";
+    const URL_TREND = "";
+
     let dbMaster = [];
     let dbPerf = [];
+    let dbFinance = [];
+    let dbTrend = [];
     let filtered = [];
     let charts = {};
     let mainPage = 1;
@@ -1067,6 +1238,7 @@
     let activeWorkMode = '全部';
     let activeOnsiteRole = '现场';
     let activeShiftView = 'card';
+    let financeTrendChart = null;
 
     const palette = ["#60a5fa", "#a78bfa", "#fbbf24", "#f87171", "#38bdf8", "#34d399"];
 
@@ -1227,7 +1399,6 @@
       if (page) page.classList.add('active');
       if (btn) btn.classList.add('active');
 
-      if (pageId === 'finance') initFinanceEmptyChart();
       renderShiftPageTables();
       updateExtraPages();
     }
@@ -1245,17 +1416,6 @@
       } else {
         document.getElementById('staffTab-list')?.classList.add('active');
       }
-    }
-
-
-    function initFinanceEmptyChart() {
-      const canvas = document.getElementById('financeHourlyChart');
-      if (!canvas || charts.financeHourlyChart) return;
-      charts.financeHourlyChart = new Chart(canvas.getContext('2d'), {
-        type:'line',
-        data:{labels:['00:00','04:00','08:00','12:00','16:00','20:00','23:00'],datasets:[{data:[],borderWidth:2,tension:.35}]},
-        options:{plugins:{legend:false},responsive:true,maintainAspectRatio:false,scales:{x:{ticks:{color:'#9fb0cf'},grid:{color:'rgba(148,163,184,.10)'}},y:{ticks:{color:'#9fb0cf'},grid:{color:'rgba(148,163,184,.10)'}}}}
-      });
     }
 
     function setShiftView(view) {
@@ -1282,6 +1442,7 @@
         updateOnsiteRoleButtons();
         toggleOnsiteRoleWrap();
         runFilters();
+        loadFinanceData();
 
         updateClock();
         setInterval(updateClock, 1000);
@@ -1710,6 +1871,231 @@
       URL.revokeObjectURL(url);
     }
 
+
+    function normalizeHeaderName(name) {
+      return String(name || '').replace(/\s+/g, '').replace(/\uFEFF/g, '');
+    }
+
+    function rowsToObjects(rows) {
+      if (!rows || rows.length < 2) return [];
+      const headers = rows[0].map(normalizeHeaderName);
+      return rows.slice(1).filter(r => r.some(c => String(c || '').trim() !== '')).map(r => {
+        const obj = {};
+        headers.forEach((h, i) => obj[h] = r[i] || '');
+        return obj;
+      });
+    }
+
+    function toNumber(v) {
+      const n = parseFloat(String(v || '').replace(/,/g, '').replace(/%/g, '').replace(/[$¥￥]/g, '').trim());
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function fmtNumber(n) {
+      return Number(n || 0).toLocaleString('en-US');
+    }
+
+    function fmtMoney(n) {
+      return '¥ ' + Number(n || 0).toLocaleString('en-US', { maximumFractionDigits: 2 });
+    }
+
+    function fmtRate(n) {
+      return Number(n || 0).toFixed(2) + '%';
+    }
+
+    async function loadFinanceData() {
+      const notice = document.getElementById('financeSheetNotice');
+      try {
+        if (URL_FINANCE) {
+          const resF = await fetch(`${URL_FINANCE}&t=${Date.now()}`);
+          dbFinance = rowsToObjects(smartParse(await resF.text()));
+        } else {
+          dbFinance = [];
+        }
+
+        if (URL_TREND) {
+          const resT = await fetch(`${URL_TREND}&t=${Date.now()}`);
+          dbTrend = rowsToObjects(smartParse(await resT.text()));
+        } else {
+          dbTrend = [];
+        }
+
+        if (notice) {
+          notice.innerHTML = URL_FINANCE
+            ? `<i class="fas fa-circle-check"></i><span>财务报表已尝试连接 Google Sheet。当前读取 ${dbFinance.length} 条数据。</span>`
+            : `<i class="fas fa-circle-info"></i><span>这里已经预留 Google Sheet 数据接口。你只需要把 URL_FINANCE / URL_TREND 换成对应 sheet 的 CSV 链接即可。</span>`;
+        }
+
+        initFinanceFilters();
+        renderFinanceReport();
+      } catch (err) {
+        console.error('财务报表读取失败', err);
+        if (notice) notice.innerHTML = `<i class="fas fa-triangle-exclamation"></i><span>财务报表读取失败，请检查 Google Sheet 是否已发布为 CSV。</span>`;
+        dbFinance = [];
+        dbTrend = [];
+        renderFinanceReport();
+      }
+    }
+
+    function initFinanceFilters() {
+      const fill = (id, values) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const old = el.value;
+        el.innerHTML = `<option value="">全部</option>` + values.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join('');
+        if (values.includes(old)) el.value = old;
+      };
+      const platforms = [...new Set(dbFinance.map(r => r['平台']).filter(Boolean))].sort();
+      const channels = [...new Set(dbFinance.map(r => r['通道']).filter(Boolean))].sort();
+      fill('financePlatformFilter', platforms);
+      fill('financeChannelFilter', channels);
+    }
+
+    function resetFinanceFilters() {
+      const d = document.getElementById('financeDateFilter');
+      const p = document.getElementById('financePlatformFilter');
+      const c = document.getElementById('financeChannelFilter');
+      if (d) d.value = '';
+      if (p) p.value = '';
+      if (c) c.value = '';
+      renderFinanceReport();
+    }
+
+    function getFilteredFinanceRows() {
+      const date = String(document.getElementById('financeDateFilter')?.value || '').trim();
+      const platform = document.getElementById('financePlatformFilter')?.value || '';
+      const channel = document.getElementById('financeChannelFilter')?.value || '';
+      return dbFinance.filter(r => {
+        const okDate = !date || String(r['日期'] || '').includes(date);
+        const okPlatform = !platform || r['平台'] === platform;
+        const okChannel = !channel || r['通道'] === channel;
+        return okDate && okPlatform && okChannel;
+      });
+    }
+
+    function renderFinanceReport() {
+      const rows = getFilteredFinanceRows();
+      renderFinanceKpi(rows);
+      renderFinancePlatformCards(rows);
+      renderFinanceTrend();
+      renderFinanceTable(rows);
+    }
+
+    function renderFinanceKpi(rows) {
+      const totalOrders = rows.reduce((s, r) => s + toNumber(r['总订单']), 0);
+      const success = rows.reduce((s, r) => s + toNumber(r['成功']), 0);
+      const amount = rows.reduce((s, r) => s + toNumber(r['金额']), 0);
+      const rate = totalOrders ? (success / totalOrders) * 100 : 0;
+
+      const byPlatform = {};
+      rows.forEach(r => {
+        const name = r['平台'] || '-';
+        if (!byPlatform[name]) byPlatform[name] = { orders:0, success:0 };
+        byPlatform[name].orders += toNumber(r['总订单']);
+        byPlatform[name].success += toNumber(r['成功']);
+      });
+      const top = Object.entries(byPlatform).map(([name, v]) => ({ name, rate: v.orders ? v.success / v.orders * 100 : 0 })).sort((a,b) => b.rate - a.rate)[0];
+
+      document.getElementById('financeKpiRate').innerText = rows.length ? fmtRate(rate) : '-';
+      document.getElementById('financeKpiOrders').innerText = rows.length ? fmtNumber(totalOrders) : '-';
+      document.getElementById('financeKpiAmount').innerText = rows.length ? fmtMoney(amount) : '-';
+      document.getElementById('financeKpiTopPlatform').innerText = top ? `${top.name} ${fmtRate(top.rate)}` : '-';
+    }
+
+    function renderFinancePlatformCards(rows) {
+      const wrap = document.getElementById('financePlatformCards');
+      const status = document.getElementById('financePlatformStatus');
+      if (!wrap) return;
+      const map = {};
+      rows.forEach(r => {
+        const name = r['平台'] || '-';
+        if (!map[name]) map[name] = { orders:0, success:0, amount:0 };
+        map[name].orders += toNumber(r['总订单']);
+        map[name].success += toNumber(r['成功']);
+        map[name].amount += toNumber(r['金额']);
+      });
+      const totalAmount = Object.values(map).reduce((s, v) => s + v.amount, 0);
+      const entries = Object.entries(map).sort((a,b) => b[1].orders - a[1].orders);
+      if (status) status.innerText = entries.length ? `${entries.length} 个平台` : '等待数据';
+      wrap.innerHTML = entries.length ? entries.map(([name, v]) => {
+        const rate = v.orders ? v.success / v.orders * 100 : 0;
+        const share = totalAmount ? v.amount / totalAmount * 100 : 0;
+        return `
+          <div class="finance-platform-card">
+            <div class="finance-platform-name">${esc(name)}</div>
+            <div class="finance-platform-row"><span>成功率</span><b>${fmtRate(rate)}</b></div>
+            <div class="finance-platform-row"><span>总订单</span><b>${fmtNumber(v.orders)}</b></div>
+            <div class="finance-platform-row"><span>金额占比</span><b>${fmtRate(share)}</b></div>
+          </div>
+        `;
+      }).join('') : `
+        <div class="finance-platform-card">
+          <div class="finance-platform-name">暂无数据</div>
+          <div class="finance-platform-row"><span>状态</span><b>等待 Google Sheet</b></div>
+          <div class="finance-platform-row"><span>提示</span><b>填入 URL_FINANCE</b></div>
+        </div>
+      `;
+    }
+
+    function renderFinanceTrend() {
+      const canvas = document.getElementById('financeTrendChart');
+      const status = document.getElementById('financeTrendStatus');
+      if (!canvas) return;
+      const latest = dbTrend.length ? dbTrend[dbTrend.length - 1] : null;
+      const labels = Array.from({length:24}, (_, i) => `${String(i).padStart(2,'0')}:00`);
+      const vals = latest ? labels.map(h => toNumber(latest[h])) : [];
+      if (financeTrendChart) financeTrendChart.destroy();
+      financeTrendChart = new Chart(canvas.getContext('2d'), {
+        type:'line',
+        data:{
+          labels,
+          datasets:[{
+            data: vals.length ? vals : labels.map(() => 0),
+            borderWidth:2,
+            tension:.35,
+            pointRadius:2,
+            fill:false
+          }]
+        },
+        options:{
+          plugins:{legend:false},
+          maintainAspectRatio:false,
+          scales:{
+            x:{ticks:{color:'#9fb0cf',maxRotation:0,autoSkip:true,maxTicksLimit:8},grid:{color:'rgba(148,163,184,.08)'}},
+            y:{ticks:{color:'#9fb0cf',callback:v => v + '%'},grid:{color:'rgba(148,163,184,.08)'},beginAtZero:true}
+          }
+        }
+      });
+      if (status) status.innerText = latest ? (latest['日期'] || '已读取') : '等待数据';
+    }
+
+    function renderFinanceTable(rows) {
+      const body = document.getElementById('financeReportBody');
+      const info = document.getElementById('financeTableInfo');
+      if (!body) return;
+      if (info) info.innerText = `${rows.length} 条数据`;
+      body.innerHTML = rows.length ? rows.map(r => {
+        const orders = toNumber(r['总订单']);
+        const success = toNumber(r['成功']);
+        const fail = r['失败'] !== undefined && r['失败'] !== '' ? toNumber(r['失败']) : Math.max(orders - success, 0);
+        const rate = r['成功率'] ? String(r['成功率']).replace('%','') : (orders ? success / orders * 100 : 0);
+        return `
+          <tr>
+            <td><span class="date-badge">${esc(r['日期'] || '-')}</span></td>
+            <td><b>${esc(r['平台'] || '-')}</b></td>
+            <td>${esc(r['通道'] || '-')}</td>
+            <td>${fmtNumber(orders)}</td>
+            <td>${fmtNumber(success)}</td>
+            <td>${fmtNumber(fail)}</td>
+            <td style="font-weight:900;color:#bfdbfe;">${fmtRate(toNumber(rate))}</td>
+            <td>${fmtMoney(toNumber(r['金额']))}</td>
+            <td>${r['金额占比'] ? esc(r['金额占比']) : '-'}</td>
+          </tr>
+        `;
+      }).join('') : `<tr class="finance-empty-row"><td colspan="9">暂无数据，请先连接 Google Sheet</td></tr>`;
+    }
+
+
     function updateExtraPages() {
       const absBody = document.getElementById('tbody-absent');
       if (absBody) {
@@ -1724,11 +2110,23 @@
         `).join('');
       }
 
-      const financeBody = document.getElementById('financeReportBody');
-      if (financeBody && !financeBody.dataset.connected) {
-        financeBody.innerHTML = `<tr><td colspan="9"><div class="finance-empty">这里暂时不填数据，后续连接 Google Sheet 后自动显示。</div></td></tr>`;
+      const salBody = document.getElementById('tbody-salary');
+      if (salBody) {
+        salBody.innerHTML = filtered.slice(0,15).map(r => {
+          const p = dbPerf.find(x => cleanID(x[0]) === cleanID(r[2]));
+          const base = 500;
+          const bonus = p ? (parseInt(p[3] || 0) * 0.05) : 0;
+          return `
+            <tr>
+              <td>#${esc(r[2] || '-')}</td>
+              <td style="font-weight:900;color:#fff;">${esc(r[3] || '-')}</td>
+              <td>$ ${base}</td>
+              <td>$ ${bonus.toFixed(2)}</td>
+              <td style="font-weight:900;color:#fff;">$ ${(base + bonus).toFixed(2)}</td>
+            </tr>
+          `;
+        }).join('');
       }
-
 
       const mtBody = document.getElementById('tbody-maintenance');
       if (mtBody) {
