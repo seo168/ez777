@@ -1428,6 +1428,13 @@
     }
 
     async function loadData() {
+      // 启动 Armenia 时间：不要等 Google Sheet 读取成功，避免任何连接失败导致时间停在 00:00:00
+      updateClock();
+      if (!window.__hgxClockTimer) window.__hgxClockTimer = setInterval(updateClock, 1000);
+
+      // 财务报表独立加载：员工数据失败也不会影响财务图表
+      loadFinanceData();
+
       try {
         const [resM, resP] = await Promise.all([
           fetch(`${URL_MASTER}&t=${Date.now()}`),
@@ -1444,10 +1451,6 @@
         updateOnsiteRoleButtons();
         toggleOnsiteRoleWrap();
         runFilters();
-        loadFinanceData();
-
-        updateClock();
-        setInterval(updateClock, 1000);
 
       } catch (e) {
         console.error("Koneksi gagal", e);
@@ -2044,90 +2047,144 @@
     }
 
     function renderFinanceTrend() {
-  const canvas = document.getElementById('financeTrendChart');
-  const status = document.getElementById('financeTrendStatus');
-  if (!canvas) return;
+      const canvas = document.getElementById('financeTrendChart');
+      const status = document.getElementById('financeTrendStatus');
+      if (!canvas) return;
 
-  function normalizeDate(v) {
-    return String(v || '').trim().replace(/-/g, '/').replace(/\./g, '/');
-  }
+      const setStatus = msg => { if (status) status.innerText = msg; };
 
-  function toNumber(v) {
-    const raw = String(v || '0').trim();
-    if (raw.includes('%')) return parseFloat(raw.replace('%', '')) || 0;
-    const n = parseFloat(raw) || 0;
-    return n > 0 && n <= 1 ? n * 100 : n;
-  }
+      function normalizeDate(v) {
+        const raw = String(v || '').trim();
+        if (!raw) return '';
 
-  const allDates = [...new Set(dbTrend.map(r => normalizeDate(r['日期'])))].filter(Boolean);
-  const latestDate = allDates.sort().pop();
-
-  const inputDate = normalizeDate(document.getElementById('financeDateFilter')?.value);
-  const targetDate = inputDate || latestDate;
-
-  const rows = dbTrend.filter(r => normalizeDate(r['日期']) === targetDate);
-
-  const labels = Array.from({length: 24}, (_, i) => `${String(i).padStart(2, '0')}:00`);
-
-  const colorMap = {
-    '66GAME':'#34d399',
-    'YYGAME':'#60a5fa',
-    'XX7':'#fbbf24',
-    'XX6':'#38bdf8',
-    'XX5':'#a78bfa',
-    'YY9':'#f87171'
-  };
-
-  const datasets = rows.map(r => {
-    const platform = String(r['平台'] || '').trim() || 'UNKNOWN';
-
-    const data = labels.map(hour => {
-      const h = parseInt(hour.split(':')[0], 10);
-      const keys = [hour, `${h}:00`, `${h}:00:00`, `${String(h).padStart(2,'0')}:00:00`];
-      const key = keys.find(k => r[k] !== undefined);
-      return toNumber(key ? r[key] : 0);
-    });
-
-    return {
-      label: platform,
-      data,
-      borderColor: colorMap[platform] || '#ffffff',
-      backgroundColor: colorMap[platform] || '#ffffff',
-      borderWidth: 2.5,
-      tension: 0.35,
-      pointRadius: 2,
-      fill: false
-    };
-  });
-
-  if (financeTrendChart) financeTrendChart.destroy();
-
-  financeTrendChart = new Chart(canvas.getContext('2d'), {
-    type: 'line',
-    data: { labels, datasets },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: {
-          display: true,
-          labels: { color: '#dbeafe', usePointStyle: true, padding: 18 }
+        // 支持 Google Sheet 导出的 Date 对象格式：Wed May 27 2026...
+        const d = new Date(raw);
+        if (!Number.isNaN(d.getTime()) && /[a-zA-Z]/.test(raw)) {
+          return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`;
         }
-      },
-      scales: {
-        x: { ticks: { color: '#9fb0cf' }, grid: { color: 'rgba(148,163,184,.08)' } },
-        y: {
-          beginAtZero: true,
-          ticks: { color: '#9fb0cf', callback: v => v + '%' },
-          grid: { color: 'rgba(148,163,184,.08)' }
+
+        const cleaned = raw.replace(/-/g, '/').replace(/\./g, '/').replace(/\s+/g, '');
+        const parts = cleaned.split('/').filter(Boolean);
+
+        // 2026/05/27 => 2026/5/27
+        if (parts.length >= 3 && parts[0].length === 4) {
+          return `${Number(parts[0])}/${Number(parts[1])}/${Number(parts[2])}`;
         }
+
+        // 5/27/2026 => 2026/5/27
+        if (parts.length >= 3 && parts[2].length === 4) {
+          return `${Number(parts[2])}/${Number(parts[0])}/${Number(parts[1])}`;
+        }
+
+        return cleaned;
       }
-    }
-  });
 
-  if (status) status.innerText = `${targetDate} (${rows.length} 平台)`;
-}
+      function trendNumber(v) {
+        const raw = String(v ?? '').trim();
+        if (!raw) return 0;
+        if (raw.includes('%')) return parseFloat(raw.replace('%', '').replace(/,/g, '')) || 0;
+        const n = parseFloat(raw.replace(/,/g, '')) || 0;
+        return n > 0 && n <= 1 ? n * 100 : n;
+      }
+
+      function getPlatform(row) {
+        return String(row['平台'] || row['AA'] || row['平台名称'] || row['Platform'] || '').trim() || 'UNKNOWN';
+      }
+
+      function getHourValue(row, hourIndex) {
+        const hh = String(hourIndex).padStart(2, '0');
+        const h = String(hourIndex);
+
+        // 兼容 Google Sheet 不同时间表头：00:00 / 0:00 / 0:00:00 / 12:00 AM / 1 AM
+        const candidates = [
+          `${hh}:00`, `${h}:00`, `${hh}:00:00`, `${h}:00:00`,
+          `${hh}:00:00 AM`, `${h}:00:00 AM`, `${hh}:00 AM`, `${h}:00 AM`,
+          `${h} AM`, `${hh} AM`
+        ];
+
+        for (const key of candidates) {
+          if (Object.prototype.hasOwnProperty.call(row, key)) return row[key];
+        }
+
+        // 再做宽松匹配，避免 Google 自动改表头格式
+        const normalizedTargetA = `${hourIndex}:00`;
+        const normalizedTargetB = `${hourIndex}:00:00`;
+        const foundKey = Object.keys(row).find(k => {
+          const nk = String(k || '').trim().replace(/^0+(\d)/, '$1');
+          return nk === normalizedTargetA || nk === normalizedTargetB;
+        });
+
+        return foundKey ? row[foundKey] : '';
+      }
+
+      if (!dbTrend || !dbTrend.length) {
+        if (financeTrendChart) financeTrendChart.destroy();
+        financeTrendChart = null;
+        setStatus('没有读取到趋势数据');
+        return;
+      }
+
+      const allDates = [...new Set(dbTrend.map(r => normalizeDate(r['日期'] || r['Date'])).filter(Boolean))];
+      const latestDate = allDates.sort((a, b) => new Date(a) - new Date(b)).pop() || '';
+      const inputDate = normalizeDate(document.getElementById('financeDateFilter')?.value || '');
+      const targetDate = inputDate || latestDate;
+
+      const rows = dbTrend.filter(r => normalizeDate(r['日期'] || r['Date']) === targetDate);
+      const labels = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`);
+
+      const colorMap = {
+        '66GAME':'#34d399',
+        'YYGAME':'#60a5fa',
+        'XX7':'#fbbf24',
+        'XX6':'#38bdf8',
+        'XX5':'#a78bfa',
+        'YY9':'#f87171'
+      };
+
+      const datasets = rows.map(r => {
+        const platform = getPlatform(r);
+        const color = colorMap[platform.toUpperCase()] || colorMap[platform] || '#ffffff';
+        return {
+          label: platform,
+          data: labels.map((_, i) => trendNumber(getHourValue(r, i))),
+          borderColor: color,
+          backgroundColor: color,
+          borderWidth: 2.5,
+          tension: 0.35,
+          pointRadius: 2,
+          pointHoverRadius: 4,
+          fill: false
+        };
+      });
+
+      if (financeTrendChart) financeTrendChart.destroy();
+
+      financeTrendChart = new Chart(canvas.getContext('2d'), {
+        type: 'line',
+        data: { labels, datasets },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: {
+              display: true,
+              labels: { color: '#dbeafe', usePointStyle: true, padding: 18, font: { weight: 'bold' } }
+            }
+          },
+          scales: {
+            x: { ticks: { color: '#9fb0cf', maxTicksLimit: 12 }, grid: { color: 'rgba(148,163,184,.08)' } },
+            y: {
+              beginAtZero: true,
+              ticks: { color: '#9fb0cf', callback: v => v + '%' },
+              grid: { color: 'rgba(148,163,184,.08)' }
+            }
+          }
+        }
+      });
+
+      setStatus(rows.length ? `${targetDate} (${rows.length} 平台)` : `没有找到 ${targetDate}`);
+    }
 
     function openDetail(masterIdx) {
       const staff = dbMaster[masterIdx];
