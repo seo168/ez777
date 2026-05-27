@@ -711,6 +711,8 @@
     .finance-panel-title span{display:flex;align-items:center;gap:9px}
     .finance-panel-title i{color:#93c5fd}
     .finance-chart-box{height:260px;position:relative}
+    .finance-trend-full{margin-bottom:1rem}
+    .finance-trend-full .finance-chart-box{height:390px}
     .finance-platform-grid{
       display:grid;
       grid-template-columns:repeat(2,minmax(0,1fr));
@@ -763,6 +765,7 @@
     @media(max-width:700px){
       .finance-kpi-grid,.finance-platform-grid,.finance-filter-grid{grid-template-columns:1fr}
       .finance-chart-box{height:220px}
+      .finance-trend-full .finance-chart-box{height:300px}
     }
 
 
@@ -1078,6 +1081,11 @@
           <button class="finance-action-btn" onclick="loadFinanceData()"><i class="fas fa-rotate"></i> 刷新数据</button>
         </div>
 
+        <div class="finance-panel finance-trend-full">
+          <div class="finance-panel-title"><span><i class="fas fa-chart-area"></i> 24小时成功率趋势</span><small id="financeTrendStatus">等待数据</small></div>
+          <div class="finance-chart-box"><canvas id="financeTrendChart"></canvas></div>
+        </div>
+
         <div class="finance-empty-note" id="financeSheetNotice">
           <i class="fas fa-circle-info"></i>
           <span>这里已经预留 Google Sheet 数据接口。你只需要把 URL_FINANCE / URL_TREND 换成对应 sheet 的 CSV 链接即可。</span>
@@ -1115,19 +1123,13 @@
           </div>
         </div>
 
-        <div class="finance-panel-grid">
-          <div class="finance-panel">
-            <div class="finance-panel-title"><span><i class="fas fa-chart-area"></i> 24小时成功率趋势</span><small id="financeTrendStatus">等待数据</small></div>
-            <div class="finance-chart-box"><canvas id="financeTrendChart"></canvas></div>
-          </div>
-          <div class="finance-panel">
-            <div class="finance-panel-title"><span><i class="fas fa-layer-group"></i> 平台成功率卡片</span><small id="financePlatformStatus">等待数据</small></div>
-            <div class="finance-platform-grid" id="financePlatformCards">
-              <div class="finance-platform-card">
-                <div class="finance-platform-name">暂无数据</div>
-                <div class="finance-platform-row"><span>状态</span><b>等待 Google Sheet</b></div>
-                <div class="finance-platform-row"><span>提示</span><b>填入 URL_FINANCE</b></div>
-              </div>
+        <div class="finance-panel">
+          <div class="finance-panel-title"><span><i class="fas fa-layer-group"></i> 平台成功率卡片</span><small id="financePlatformStatus">等待数据</small></div>
+          <div class="finance-platform-grid" id="financePlatformCards">
+            <div class="finance-platform-card">
+              <div class="finance-platform-name">暂无数据</div>
+              <div class="finance-platform-row"><span>状态</span><b>等待 Google Sheet</b></div>
+              <div class="finance-platform-row"><span>提示</span><b>填入 URL_FINANCE</b></div>
             </div>
           </div>
         </div>
@@ -2053,100 +2055,40 @@
     day: 'numeric'
   }).replace(/\//g, '/');
 
-  const selectedDate =
-    document.getElementById('financeDateFilter')?.value?.trim();
+  const selectedDate = document.getElementById('financeDateFilter')?.value?.trim();
 
   const targetDate = selectedDate || today;
 
-  const rows = dbTrend.filter(
-    r => String(r['日期'] || '').trim() === targetDate
-  );
+  const latest = dbTrend.find(r => String(r['日期'] || '').trim() === targetDate) || null;
 
-  const labels = Array.from(
-    { length: 24 },
-    (_, i) => `${String(i).padStart(2, '0')}:00`
-  );
-
-  const colorMap = {
-    'YYGAME':'#60a5fa',
-    'XX5':'#a78bfa',
-    'XX7':'#fbbf24',
-    'XX6':'#38bdf8',
-    'YY9':'#f87171',
-    '66GAME':'#34d399'
-  };
-
-  const datasets = rows.map(r => {
-    const platform = r['平台'] || 'UNKNOWN';
-
-    return {
-      label: platform,
-      data: labels.map(h => {
-        const hour = parseInt(h.split(':')[0], 10);
-
-        const keys = [
-          h,
-          `${hour}:00`,
-          `${hour}:00:00`,
-          `${String(hour).padStart(2,'0')}:00:00`
-        ];
-
-        const key = keys.find(k => r[k] !== undefined);
-
-        return parseFloat(
-          String(key ? r[key] : 0).replace('%','')
-        ) || 0;
-      }),
-      borderColor: colorMap[platform] || '#ffffff',
-      backgroundColor: colorMap[platform] || '#ffffff',
-      borderWidth: 2,
-      tension: 0.35,
-      pointRadius: 2,
-      fill: false
-    };
-  });
+  const labels = Array.from({length:24}, (_, i) => `${String(i).padStart(2,'0')}:00`);
+  const vals = latest ? labels.map(h => toNumber(latest[h])) : [];
 
   if (financeTrendChart) financeTrendChart.destroy();
 
   financeTrendChart = new Chart(canvas.getContext('2d'), {
-    type: 'line',
-    data: {
+    type:'line',
+    data:{
       labels,
-      datasets
+      datasets:[{
+        data: vals.length ? vals : labels.map(() => 0),
+        borderWidth:2,
+        tension:.35,
+        pointRadius:2,
+        fill:false
+      }]
     },
-    options: {
-      responsive:true,
+    options:{
+      plugins:{legend:false},
       maintainAspectRatio:false,
-      plugins:{
-        legend:{
-          display:true,
-          labels:{
-            color:'#dbeafe'
-          }
-        }
-      },
       scales:{
-        x:{
-          ticks:{color:'#9fb0cf'},
-          grid:{color:'rgba(148,163,184,.08)'}
-        },
-        y:{
-          ticks:{
-            color:'#9fb0cf',
-            callback:v => v + '%'
-          },
-          grid:{color:'rgba(148,163,184,.08)'},
-          beginAtZero:true
-        }
+        x:{ticks:{color:'#9fb0cf',maxRotation:0,autoSkip:true,maxTicksLimit:8},grid:{color:'rgba(148,163,184,.08)'}},
+        y:{ticks:{color:'#9fb0cf',callback:v => v + '%'},grid:{color:'rgba(148,163,184,.08)'},beginAtZero:true}
       }
     }
   });
 
-  if(status){
-    status.innerText = rows.length
-      ? `${targetDate} (${rows.length} 平台)`
-      : `没有找到 ${targetDate}`;
-  }
+  if (status) status.innerText = latest ? targetDate : `没有找到 ${targetDate}`;
 }
 
     function renderFinanceTable(rows) {
