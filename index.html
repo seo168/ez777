@@ -2053,40 +2053,100 @@
     day: 'numeric'
   }).replace(/\//g, '/');
 
-  const selectedDate = document.getElementById('financeDateFilter')?.value?.trim();
+  const selectedDate =
+    document.getElementById('financeDateFilter')?.value?.trim();
 
   const targetDate = selectedDate || today;
 
-  const latest = dbTrend.find(r => String(r['日期'] || '').trim() === targetDate) || null;
+  const rows = dbTrend.filter(
+    r => String(r['日期'] || '').trim() === targetDate
+  );
 
-  const labels = Array.from({length:24}, (_, i) => `${String(i).padStart(2,'0')}:00`);
-  const vals = latest ? labels.map(h => {   const hour = parseInt(h.split(':')[0], 10);   const keys = [     h,     `${hour}:00`,     `${hour}:00:00`,     `${String(hour).padStart(2,'0')}:00:00`   ];   const key = keys.find(k => latest[k] !== undefined);   return toNumber(key ? latest[key] : 0); }) : [];
+  const labels = Array.from(
+    { length: 24 },
+    (_, i) => `${String(i).padStart(2, '0')}:00`
+  );
+
+  const colorMap = {
+    'YYGAME':'#60a5fa',
+    'XX5':'#a78bfa',
+    'XX7':'#fbbf24',
+    'XX6':'#38bdf8',
+    'YY9':'#f87171',
+    '66GAME':'#34d399'
+  };
+
+  const datasets = rows.map(r => {
+    const platform = r['平台'] || 'UNKNOWN';
+
+    return {
+      label: platform,
+      data: labels.map(h => {
+        const hour = parseInt(h.split(':')[0], 10);
+
+        const keys = [
+          h,
+          `${hour}:00`,
+          `${hour}:00:00`,
+          `${String(hour).padStart(2,'0')}:00:00`
+        ];
+
+        const key = keys.find(k => r[k] !== undefined);
+
+        return parseFloat(
+          String(key ? r[key] : 0).replace('%','')
+        ) || 0;
+      }),
+      borderColor: colorMap[platform] || '#ffffff',
+      backgroundColor: colorMap[platform] || '#ffffff',
+      borderWidth: 2,
+      tension: 0.35,
+      pointRadius: 2,
+      fill: false
+    };
+  });
 
   if (financeTrendChart) financeTrendChart.destroy();
 
   financeTrendChart = new Chart(canvas.getContext('2d'), {
-    type:'line',
-    data:{
+    type: 'line',
+    data: {
       labels,
-      datasets:[{
-        data: vals.length ? vals : labels.map(() => 0),
-        borderWidth:2,
-        tension:.35,
-        pointRadius:2,
-        fill:false
-      }]
+      datasets
     },
-    options:{
-      plugins:{legend:false},
+    options: {
+      responsive:true,
       maintainAspectRatio:false,
+      plugins:{
+        legend:{
+          display:true,
+          labels:{
+            color:'#dbeafe'
+          }
+        }
+      },
       scales:{
-        x:{ticks:{color:'#9fb0cf',maxRotation:0,autoSkip:true,maxTicksLimit:8},grid:{color:'rgba(148,163,184,.08)'}},
-        y:{ticks:{color:'#9fb0cf',callback:v => v + '%'},grid:{color:'rgba(148,163,184,.08)'},beginAtZero:true}
+        x:{
+          ticks:{color:'#9fb0cf'},
+          grid:{color:'rgba(148,163,184,.08)'}
+        },
+        y:{
+          ticks:{
+            color:'#9fb0cf',
+            callback:v => v + '%'
+          },
+          grid:{color:'rgba(148,163,184,.08)'},
+          beginAtZero:true
+        }
       }
     }
   });
 
-  if (status) status.innerText = latest ? targetDate : `没有找到 ${targetDate}`;
+  if(status){
+    status.innerText = rows.length
+      ? `${targetDate} (${rows.length} 平台)`
+      : `没有找到 ${targetDate}`;
+  }
 }
 
     function renderFinanceTable(rows) {
