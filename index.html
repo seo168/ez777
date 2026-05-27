@@ -1886,6 +1886,10 @@
       });
     }
 
+    function toNumber(v){
+      return parseFloat(String(v || '0').replace('%','')) || 0;
+    }
+    
     function toNumber(v) {
       const n = parseFloat(String(v || '').replace(/,/g, '').replace(/%/g, '').replace(/[$¥￥]/g, '').trim());
       return Number.isFinite(n) ? n : 0;
