@@ -2038,36 +2038,52 @@
     }
 
     function renderFinanceTrend() {
-      const canvas = document.getElementById('financeTrendChart');
-      const status = document.getElementById('financeTrendStatus');
-      if (!canvas) return;
-      const latest = dbTrend.length ? dbTrend[dbTrend.length - 1] : null;
-      const labels = Array.from({length:24}, (_, i) => `${String(i).padStart(2,'0')}:00`);
-      const vals = latest ? labels.map(h => toNumber(latest[h])) : [];
-      if (financeTrendChart) financeTrendChart.destroy();
-      financeTrendChart = new Chart(canvas.getContext('2d'), {
-        type:'line',
-        data:{
-          labels,
-          datasets:[{
-            data: vals.length ? vals : labels.map(() => 0),
-            borderWidth:2,
-            tension:.35,
-            pointRadius:2,
-            fill:false
-          }]
-        },
-        options:{
-          plugins:{legend:false},
-          maintainAspectRatio:false,
-          scales:{
-            x:{ticks:{color:'#9fb0cf',maxRotation:0,autoSkip:true,maxTicksLimit:8},grid:{color:'rgba(148,163,184,.08)'}},
-            y:{ticks:{color:'#9fb0cf',callback:v => v + '%'},grid:{color:'rgba(148,163,184,.08)'},beginAtZero:true}
-          }
-        }
-      });
-      if (status) status.innerText = latest ? (latest['日期'] || '已读取') : '等待数据';
+  const canvas = document.getElementById('financeTrendChart');
+  const status = document.getElementById('financeTrendStatus');
+  if (!canvas) return;
+
+  const today = new Date().toLocaleDateString('zh-CN', {
+    timeZone: 'Asia/Yerevan',
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric'
+  }).replace(/\//g, '/');
+
+  const selectedDate = document.getElementById('financeDateFilter')?.value?.trim();
+
+  const targetDate = selectedDate || today;
+
+  const latest = dbTrend.find(r => String(r['日期'] || '').trim() === targetDate) || null;
+
+  const labels = Array.from({length:24}, (_, i) => `${String(i).padStart(2,'0')}:00`);
+  const vals = latest ? labels.map(h => toNumber(latest[h])) : [];
+
+  if (financeTrendChart) financeTrendChart.destroy();
+
+  financeTrendChart = new Chart(canvas.getContext('2d'), {
+    type:'line',
+    data:{
+      labels,
+      datasets:[{
+        data: vals.length ? vals : labels.map(() => 0),
+        borderWidth:2,
+        tension:.35,
+        pointRadius:2,
+        fill:false
+      }]
+    },
+    options:{
+      plugins:{legend:false},
+      maintainAspectRatio:false,
+      scales:{
+        x:{ticks:{color:'#9fb0cf',maxRotation:0,autoSkip:true,maxTicksLimit:8},grid:{color:'rgba(148,163,184,.08)'}},
+        y:{ticks:{color:'#9fb0cf',callback:v => v + '%'},grid:{color:'rgba(148,163,184,.08)'},beginAtZero:true}
+      }
     }
+  });
+
+  if (status) status.innerText = latest ? targetDate : `没有找到 ${targetDate}`;
+}
 
     function renderFinanceTable(rows) {
       const body = document.getElementById('financeReportBody');
