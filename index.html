@@ -2274,12 +2274,23 @@
       const labels = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`);
       const setStatus = msg => { if (status) status.innerText = msg; };
 
-      function getArmeniaDate(offsetDays = 0) {
+      function getIndiaDate(offsetDays = 0) {
         const now = new Date();
-        const utc = now.getTime() + now.getTimezoneOffset() * 60000;
-        const yrv = new Date(utc + 4 * 3600000);
-        yrv.setDate(yrv.getDate() + offsetDays);
-        return `${yrv.getFullYear()}/${yrv.getMonth() + 1}/${yrv.getDate()}`;
+        const parts = new Intl.DateTimeFormat('en-CA', {
+          timeZone: 'Asia/Kolkata',
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit'
+        }).formatToParts(now);
+
+        const y = Number(parts.find(p => p.type === 'year')?.value || 0);
+        const m = Number(parts.find(p => p.type === 'month')?.value || 0);
+        const d = Number(parts.find(p => p.type === 'day')?.value || 0);
+
+        const indiaDate = new Date(y, m - 1, d);
+        indiaDate.setDate(indiaDate.getDate() + offsetDays);
+
+        return `${indiaDate.getFullYear()}/${indiaDate.getMonth() + 1}/${indiaDate.getDate()}`;
       }
 
       function dateToObj(v) {
@@ -2385,7 +2396,7 @@
       )];
 
       const inputDate = normalizeDateText(document.getElementById('financeDateFilter')?.value || '');
-      const armeniaToday = getArmeniaDate(0);
+      const indiaToday = getIndiaDate(0);
 
       const latestDate = allDates
         .slice()
@@ -2397,7 +2408,7 @@
         .pop() || '';
 
       // 图表只显示目标日期 24 小时；下方显示目标日期对比前 1 天、前 2 天
-      const targetDate = inputDate || (allDates.includes(armeniaToday) ? armeniaToday : latestDate);
+      const targetDate = inputDate || (allDates.includes(indiaToday) ? indiaToday : latestDate);
       const yesterdayDate = shiftDate(targetDate, -1);
       const twoDaysDate = shiftDate(targetDate, -2);
 
@@ -2477,7 +2488,7 @@
       if (rows.length) {
         setStatus(`${targetDate} 24小时｜昨日 ${yesterdayDate}｜前日 ${twoDaysDate}`);
       } else {
-        setStatus(`没有找到 ${targetDate}｜亚美尼亚今天 ${armeniaToday}`);
+        setStatus(`没有找到 ${targetDate}｜印度今天 ${indiaToday}`);
       }
     }
 
