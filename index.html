@@ -1226,8 +1226,8 @@
       财务报表建议表头：日期, 平台, 通道, 总订单, 成功, 失败, 成功率, 金额, 金额占比
       24小时趋势建议表头：日期, 00:00, 01:00, 02:00 ... 23:00
     */
-    const URL_FINANCE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRTWdis5deT7Foc0n9WvjY45n-Yl5oujgHKUKo8yncqAiMfxi42VZEh3OezV3BSozJsY_b9jexKArco/pub?gid=365388380&output=csv";
-    const URL_TREND = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRTWdis5deT7Foc0n9WvjY45n-Yl5oujgHKUKo8yncqAiMfxi42VZEh3OezV3BSozJsY_b9jexKArco/pub?gid=1344701812&output=csv";
+    const URL_FINANCE = "https://docs.google.com/spreadsheets/d/1nVAlnCEtdkhwC52l7Vo9Q1ywfpPUBR4bscYzMpH4sLg/export?format=csv&gid=365388380";
+    const URL_TREND = "https://docs.google.com/spreadsheets/d/1nVAlnCEtdkhwC52l7Vo9Q1ywfpPUBR4bscYzMpH4sLg/export?format=csv&gid=1344701812";
 
     let dbMaster = [];
     let dbPerf = [];
@@ -1930,8 +1930,8 @@
         }
 
         if (notice) {
-          notice.innerHTML = URL_FINANCE
-            ? `<i class="fas fa-circle-check"></i><span>Google Sheet 已连接。财务报表 ${dbFinance.length} 条，24小时趋势 ${dbTrend.length} 条。</span>`
+          notice.innerHTML = (URL_FINANCE || URL_TREND)
+            ? `<i class="fas fa-circle-check"></i><span>Google Sheet 已连接：财务报表 ${dbFinance.length} 条，24小时趋势 ${dbTrend.length} 条。</span>`
             : `<i class="fas fa-circle-info"></i><span>这里已经预留 Google Sheet 数据接口。你只需要把 URL_FINANCE / URL_TREND 换成对应 sheet 的 CSV 链接即可。</span>`;
         }
 
@@ -1970,27 +1970,12 @@
       renderFinanceReport();
     }
 
-    function normalizeFinanceDate(v) {
-      const raw = String(v || '').trim();
-      if (!raw) return '';
-      const cleaned = raw.replace(/-/g, '/').replace(/\./g, '/').replace(/\s+/g, '');
-      const parts = cleaned.split('/').filter(Boolean);
-      if (parts.length >= 3 && parts[0].length === 4) {
-        return `${Number(parts[0])}/${Number(parts[1])}/${Number(parts[2])}`;
-      }
-      if (parts.length >= 3 && parts[2].length === 4) {
-        return `${Number(parts[2])}/${Number(parts[0])}/${Number(parts[1])}`;
-      }
-      return cleaned;
-    }
-
     function getFilteredFinanceRows() {
-      const dateInput = normalizeFinanceDate(document.getElementById('financeDateFilter')?.value || '');
+      const date = String(document.getElementById('financeDateFilter')?.value || '').trim();
       const platform = document.getElementById('financePlatformFilter')?.value || '';
       const channel = document.getElementById('financeChannelFilter')?.value || '';
       return dbFinance.filter(r => {
-        const rowDate = normalizeFinanceDate(r['日期'] || r['Date'] || '');
-        const okDate = !dateInput || rowDate === dateInput || rowDate.includes(dateInput);
+        const okDate = !date || String(r['日期'] || '').includes(date);
         const okPlatform = !platform || r['平台'] === platform;
         const okChannel = !channel || r['通道'] === channel;
         return okDate && okPlatform && okChannel;
