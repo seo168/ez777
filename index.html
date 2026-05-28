@@ -1878,26 +1878,76 @@
 
 
     function normalizeHeaderName(name) {
-      return String(name || '').replace(/\s+/g, '').replace(/\uFEFF/g, '');
+      return String(name || '')
+        .replace(/^\uFEFF/, '')
+        .replace(/\u00A0/g, ' ')
+        .replace(/\s+/g, '')
+        .trim();
     }
 
     function rowsToObjects(rows) {
       if (!rows || rows.length < 2) return [];
       const headers = rows[0].map(normalizeHeaderName);
-      return rows.slice(1).filter(r => r.some(c => String(c || '').trim() !== '')).map(r => {
-        const obj = {};
-        headers.forEach((h, i) => obj[h] = r[i] || '');
-        return obj;
-      });
+      return rows
+        .slice(1)
+        .filter(r => r.some(c => String(c || '').trim() !== ''))
+        .map(r => {
+          const obj = {};
+          headers.forEach((h, i) => {
+            if (!h) return;
+            obj[h] = r[i] || '';
+          });
+          return obj;
+        });
     }
 
-    function toNumber(v){
-      return parseFloat(String(v || '0').replace('%','')) || 0;
-    }
-    
     function toNumber(v) {
-      const n = parseFloat(String(v || '').replace(/,/g, '').replace(/%/g, '').replace(/[$¥￥]/g, '').trim());
-      return Number.isFinite(n) ? n : 0;
+      const raw = String(v ?? '').trim();
+      if (!raw) return 0;
+      const n = parseFloat(raw.replace(/,/g, '').replace(/%/g, '').replace(/[$¥￥]/g, '').trim());
+      if (!Number.isFinite(n)) return 0;
+      return n;
+    }
+
+    function toRateNumber(v) {
+      const raw = String(v ?? '').trim();
+      if (!raw) return 0;
+      if (raw.includes('%')) return parseFloat(raw.replace('%', '').replace(/,/g, '')) || 0;
+      const n = parseFloat(raw.replace(/,/g, '')) || 0;
+      return n > 0 && n <= 1 ? n * 100 : n;
+    }
+
+    function getAny(row, keys, fallback='') {
+      for (const k of keys) {
+        const nk = normalizeHeaderName(k);
+        if (row && Object.prototype.hasOwnProperty.call(row, nk) && String(row[nk] ?? '').trim() !== '') {
+          return row[nk];
+        }
+      }
+      return fallback;
+    }
+
+    function normalizeDateText(v) {
+      const raw = String(v || '').trim();
+      if (!raw) return '';
+
+      const d = new Date(raw);
+      if (!Number.isNaN(d.getTime()) && /[a-zA-Z]/.test(raw)) {
+        return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`;
+      }
+
+      const cleaned = raw.replace(/-/g, '/').replace(/\./g, '/').replace(/\s+/g, '');
+      const parts = cleaned.split('/').filter(Boolean);
+
+      if (parts.length >= 3 && parts[0].length === 4) {
+        return `${Number(parts[0])}/${Number(parts[1])}/${Number(parts[2])}`;
+      }
+
+      if (parts.length >= 3 && parts[2].length === 4) {
+        return `${Number(parts[2])}/${Number(parts[0])}/${Number(parts[1])}`;
+      }
+
+      return cleaned;
     }
 
     function fmtNumber(n) {
@@ -1912,34 +1962,94 @@
       return Number(n || 0).toFixed(2) + '%';
     }
 
+    function withCacheBust(url) {
+      if (!url) return '';
+      return url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
+    }
+
+    function financeUrlCandidates(type) {
+      const pubBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRTWdis5deT7Foc0n9WvjY45n-Yl5oujgHKUKo8yncqAiMfxi42VZEh3OezV3BSozJsY_b9jexKArco/pub';
+      const exportBase = 'https://docs.google.com/spreadsheets/d/1nVAlnCEtdkhwC52l7Vo9Q1ywfpPUBR4bscYzMpH4sLg/export?format=csv';
+      const gid = type === 'finance' ? '365388380' : '1344701812';
+      const first = type === 'finance' ? URL_FINANCE : URL_TREND;
+      return [
+        first,
+        `${pubBase}?gid=${gid}&single=true&output=csv`,
+        `${pubBase}?gid=${gid}&output=csv`,
+        `${exportBase}&gid=${gid}`
+      ].filter(Boolean).filter((v, i, arr) => arr.indexOf(v) === i);
+    }
+
+    async function fetchCsvFromCandidates(urls) {
+      let lastErr = '';
+      for (const url of urls) {
+        try {
+          const res = await fetch(withCacheBust(url), { cache: 'no-store' });
+          const text = await res.text();
+          const preview = text.slice(0, 120).replace(/\s+/g, ' ');
+
+          if (!res.ok) {
+            lastErr = `HTTP ${res.status}: ${preview}`;
+            continue;
+          }
+
+          // Kalau yang kebaca HTML, artinya link bukan CSV / belum publish / butuh login.
+          if (/^\s*</.test(text) || /<html|doctype html|signin|accounts\.google/i.test(text)) {
+            lastErr = `返回HTML，不是CSV：${preview}`;
+            continue;
+          }
+
+          const rows = smartParse(text);
+          if (!rows.length || !rows[0] || rows[0].length < 1) {
+            lastErr = `CSV kosong：${preview}`;
+            continue;
+          }
+
+          return { rows, url };
+        } catch (err) {
+          lastErr = err.message || String(err);
+        }
+      }
+      throw new Error(lastErr || '所有CSV链接都读取失败');
+    }
+
     async function loadFinanceData() {
       const notice = document.getElementById('financeSheetNotice');
       try {
-        if (URL_FINANCE) {
-          const resF = await fetch(`${URL_FINANCE}&t=${Date.now()}`);
-          dbFinance = rowsToObjects(smartParse(await resF.text()));
-        } else {
+        let financeInfo = null;
+        let trendInfo = null;
+
+        try {
+          financeInfo = await fetchCsvFromCandidates(financeUrlCandidates('finance'));
+          dbFinance = rowsToObjects(financeInfo.rows);
+        } catch (e) {
+          console.error('财务报表 CSV 读取失败', e);
           dbFinance = [];
         }
 
-        if (URL_TREND) {
-          const resT = await fetch(`${URL_TREND}&t=${Date.now()}`);
-          dbTrend = rowsToObjects(smartParse(await resT.text()));
-        } else {
+        try {
+          trendInfo = await fetchCsvFromCandidates(financeUrlCandidates('trend'));
+          dbTrend = rowsToObjects(trendInfo.rows);
+        } catch (e) {
+          console.error('24小时趋势 CSV 读取失败', e);
           dbTrend = [];
         }
 
+        const financeHeaders = financeInfo?.rows?.[0]?.map(normalizeHeaderName).join(' | ') || '-';
+        const trendHeaders = trendInfo?.rows?.[0]?.map(normalizeHeaderName).join(' | ') || '-';
+
         if (notice) {
-          notice.innerHTML = (URL_FINANCE || URL_TREND)
-            ? `<i class="fas fa-circle-check"></i><span>Google Sheet 已连接：财务报表 ${dbFinance.length} 条，24小时趋势 ${dbTrend.length} 条。</span>`
-            : `<i class="fas fa-circle-info"></i><span>这里已经预留 Google Sheet 数据接口。你只需要把 URL_FINANCE / URL_TREND 换成对应 sheet 的 CSV 链接即可。</span>`;
+          const ok = dbFinance.length || dbTrend.length;
+          notice.innerHTML = ok
+            ? `<i class="fas fa-circle-check"></i><span>Google Sheet 已连接：财务报表 ${dbFinance.length} 条，24小时趋势 ${dbTrend.length} 条。<br>财务表头：${esc(financeHeaders)}<br>趋势表头：${esc(trendHeaders)}</span>`
+            : `<i class="fas fa-triangle-exclamation"></i><span>没有读取到财务数据。请确认 Google Sheet 已发布为 CSV，并且不是私密权限。打开浏览器 Console 可查看具体错误。</span>`;
         }
 
         initFinanceFilters();
         renderFinanceReport();
       } catch (err) {
         console.error('财务报表读取失败', err);
-        if (notice) notice.innerHTML = `<i class="fas fa-triangle-exclamation"></i><span>财务报表读取失败，请检查 Google Sheet 是否已发布为 CSV。</span>`;
+        if (notice) notice.innerHTML = `<i class="fas fa-triangle-exclamation"></i><span>财务报表读取失败：${esc(err.message || err)}。</span>`;
         dbFinance = [];
         dbTrend = [];
         renderFinanceReport();
@@ -1954,8 +2064,8 @@
         el.innerHTML = `<option value="">全部</option>` + values.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join('');
         if (values.includes(old)) el.value = old;
       };
-      const platforms = [...new Set(dbFinance.map(r => r['平台']).filter(Boolean))].sort();
-      const channels = [...new Set(dbFinance.map(r => r['通道']).filter(Boolean))].sort();
+      const platforms = [...new Set(dbFinance.map(r => String(getAny(r, ['平台','平台名称','Platform','AA'], '')).trim()).filter(Boolean))].sort();
+      const channels = [...new Set(dbFinance.map(r => String(getAny(r, ['通道','渠道','Channel'], '')).trim()).filter(Boolean))].sort();
       fill('financePlatformFilter', platforms);
       fill('financeChannelFilter', channels);
     }
@@ -1970,14 +2080,34 @@
       renderFinanceReport();
     }
 
+    function getFinanceDate(row) { return normalizeDateText(getAny(row, ['日期','Date','时间','日期时间'], '')); }
+    function getFinancePlatform(row) { return String(getAny(row, ['平台','平台名称','Platform','AA'], '-')).trim() || '-'; }
+    function getFinanceChannel(row) { return String(getAny(row, ['通道','渠道','Channel'], '-')).trim() || '-'; }
+    function getFinanceOrders(row) { return toNumber(getAny(row, ['总订单','订单','订单数','TotalOrders'], 0)); }
+    function getFinanceSuccess(row) { return toNumber(getAny(row, ['成功','成功订单','成功数','Success'], 0)); }
+    function getFinanceFail(row) {
+      const explicit = getAny(row, ['失败','失败订单','失败数','Fail'], '');
+      if (explicit !== '') return toNumber(explicit);
+      return Math.max(getFinanceOrders(row) - getFinanceSuccess(row), 0);
+    }
+    function getFinanceAmount(row) { return toNumber(getAny(row, ['金额','总金额','Amount','TotalAmount'], 0)); }
+    function getFinanceAmountShare(row) { return getAny(row, ['金额占比','占比','AmountShare'], ''); }
+    function getFinanceRate(row) {
+      const explicit = getAny(row, ['成功率','成功率%','Rate','SuccessRate'], '');
+      if (explicit !== '') return toRateNumber(explicit);
+      const orders = getFinanceOrders(row);
+      return orders ? getFinanceSuccess(row) / orders * 100 : 0;
+    }
+
     function getFilteredFinanceRows() {
-      const date = String(document.getElementById('financeDateFilter')?.value || '').trim();
+      const date = normalizeDateText(document.getElementById('financeDateFilter')?.value || '');
       const platform = document.getElementById('financePlatformFilter')?.value || '';
       const channel = document.getElementById('financeChannelFilter')?.value || '';
       return dbFinance.filter(r => {
-        const okDate = !date || String(r['日期'] || '').includes(date);
-        const okPlatform = !platform || r['平台'] === platform;
-        const okChannel = !channel || r['通道'] === channel;
+        const rowDate = getFinanceDate(r);
+        const okDate = !date || rowDate.includes(date);
+        const okPlatform = !platform || getFinancePlatform(r) === platform;
+        const okChannel = !channel || getFinanceChannel(r) === channel;
         return okDate && okPlatform && okChannel;
       });
     }
@@ -1991,17 +2121,17 @@
     }
 
     function renderFinanceKpi(rows) {
-      const totalOrders = rows.reduce((s, r) => s + toNumber(r['总订单']), 0);
-      const success = rows.reduce((s, r) => s + toNumber(r['成功']), 0);
-      const amount = rows.reduce((s, r) => s + toNumber(r['金额']), 0);
+      const totalOrders = rows.reduce((s, r) => s + getFinanceOrders(r), 0);
+      const success = rows.reduce((s, r) => s + getFinanceSuccess(r), 0);
+      const amount = rows.reduce((s, r) => s + getFinanceAmount(r), 0);
       const rate = totalOrders ? (success / totalOrders) * 100 : 0;
 
       const byPlatform = {};
       rows.forEach(r => {
-        const name = r['平台'] || '-';
+        const name = getFinancePlatform(r);
         if (!byPlatform[name]) byPlatform[name] = { orders:0, success:0 };
-        byPlatform[name].orders += toNumber(r['总订单']);
-        byPlatform[name].success += toNumber(r['成功']);
+        byPlatform[name].orders += getFinanceOrders(r);
+        byPlatform[name].success += getFinanceSuccess(r);
       });
       const top = Object.entries(byPlatform).map(([name, v]) => ({ name, rate: v.orders ? v.success / v.orders * 100 : 0 })).sort((a,b) => b.rate - a.rate)[0];
 
@@ -2017,11 +2147,11 @@
       if (!wrap) return;
       const map = {};
       rows.forEach(r => {
-        const name = r['平台'] || '-';
+        const name = getFinancePlatform(r);
         if (!map[name]) map[name] = { orders:0, success:0, amount:0 };
-        map[name].orders += toNumber(r['总订单']);
-        map[name].success += toNumber(r['成功']);
-        map[name].amount += toNumber(r['金额']);
+        map[name].orders += getFinanceOrders(r);
+        map[name].success += getFinanceSuccess(r);
+        map[name].amount += getFinanceAmount(r);
       });
       const totalAmount = Object.values(map).reduce((s, v) => s + v.amount, 0);
       const entries = Object.entries(map).sort((a,b) => b[1].orders - a[1].orders);
@@ -2041,9 +2171,33 @@
         <div class="finance-platform-card">
           <div class="finance-platform-name">暂无数据</div>
           <div class="finance-platform-row"><span>状态</span><b>等待 Google Sheet</b></div>
-          <div class="finance-platform-row"><span>提示</span><b>填入 URL_FINANCE</b></div>
+          <div class="finance-platform-row"><span>提示</span><b>检查财务表头/发布权限</b></div>
         </div>
       `;
+    }
+
+    function getTrendPlatform(row) {
+      return String(getAny(row, ['平台','平台名称','Platform','AA'], '')).trim() || 'UNKNOWN';
+    }
+
+    function getTrendHourValue(row, hourIndex) {
+      const hh = String(hourIndex).padStart(2, '0');
+      const h = String(hourIndex);
+      const candidates = [
+        `${hh}:00`, `${h}:00`, `${hh}:00:00`, `${h}:00:00`,
+        `${hh}:00:00AM`, `${h}:00:00AM`, `${hh}:00AM`, `${h}:00AM`,
+        `${hh}:00:00 AM`, `${h}:00:00 AM`, `${hh}:00 AM`, `${h}:00 AM`,
+        `${h}AM`, `${hh}AM`, `${h} AM`, `${hh} AM`
+      ];
+      for (const key of candidates) {
+        const nk = normalizeHeaderName(key);
+        if (Object.prototype.hasOwnProperty.call(row, nk)) return row[nk];
+      }
+      const foundKey = Object.keys(row).find(k => {
+        const nk = String(k || '').trim().replace(/\s+/g, '').replace(/^0+(\d)/, '$1');
+        return nk === `${hourIndex}:00` || nk === `${hourIndex}:00:00` || nk === `${hourIndex}:00AM` || nk === `${hourIndex}:00:00AM`;
+      });
+      return foundKey ? row[foundKey] : '';
     }
 
     function renderFinanceTrend() {
@@ -2053,70 +2207,6 @@
 
       const setStatus = msg => { if (status) status.innerText = msg; };
 
-      function normalizeDate(v) {
-        const raw = String(v || '').trim();
-        if (!raw) return '';
-
-        // 支持 Google Sheet 导出的 Date 对象格式：Wed May 27 2026...
-        const d = new Date(raw);
-        if (!Number.isNaN(d.getTime()) && /[a-zA-Z]/.test(raw)) {
-          return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`;
-        }
-
-        const cleaned = raw.replace(/-/g, '/').replace(/\./g, '/').replace(/\s+/g, '');
-        const parts = cleaned.split('/').filter(Boolean);
-
-        // 2026/05/27 => 2026/5/27
-        if (parts.length >= 3 && parts[0].length === 4) {
-          return `${Number(parts[0])}/${Number(parts[1])}/${Number(parts[2])}`;
-        }
-
-        // 5/27/2026 => 2026/5/27
-        if (parts.length >= 3 && parts[2].length === 4) {
-          return `${Number(parts[2])}/${Number(parts[0])}/${Number(parts[1])}`;
-        }
-
-        return cleaned;
-      }
-
-      function trendNumber(v) {
-        const raw = String(v ?? '').trim();
-        if (!raw) return 0;
-        if (raw.includes('%')) return parseFloat(raw.replace('%', '').replace(/,/g, '')) || 0;
-        const n = parseFloat(raw.replace(/,/g, '')) || 0;
-        return n > 0 && n <= 1 ? n * 100 : n;
-      }
-
-      function getPlatform(row) {
-        return String(row['平台'] || row['AA'] || row['平台名称'] || row['Platform'] || '').trim() || 'UNKNOWN';
-      }
-
-      function getHourValue(row, hourIndex) {
-        const hh = String(hourIndex).padStart(2, '0');
-        const h = String(hourIndex);
-
-        // 兼容 Google Sheet 不同时间表头：00:00 / 0:00 / 0:00:00 / 12:00 AM / 1 AM
-        const candidates = [
-          `${hh}:00`, `${h}:00`, `${hh}:00:00`, `${h}:00:00`,
-          `${hh}:00:00 AM`, `${h}:00:00 AM`, `${hh}:00 AM`, `${h}:00 AM`,
-          `${h} AM`, `${hh} AM`
-        ];
-
-        for (const key of candidates) {
-          if (Object.prototype.hasOwnProperty.call(row, key)) return row[key];
-        }
-
-        // 再做宽松匹配，避免 Google 自动改表头格式
-        const normalizedTargetA = `${hourIndex}:00`;
-        const normalizedTargetB = `${hourIndex}:00:00`;
-        const foundKey = Object.keys(row).find(k => {
-          const nk = String(k || '').trim().replace(/^0+(\d)/, '$1');
-          return nk === normalizedTargetA || nk === normalizedTargetB;
-        });
-
-        return foundKey ? row[foundKey] : '';
-      }
-
       if (!dbTrend || !dbTrend.length) {
         if (financeTrendChart) financeTrendChart.destroy();
         financeTrendChart = null;
@@ -2124,12 +2214,12 @@
         return;
       }
 
-      const allDates = [...new Set(dbTrend.map(r => normalizeDate(r['日期'] || r['Date'])).filter(Boolean))];
+      const allDates = [...new Set(dbTrend.map(r => normalizeDateText(getAny(r, ['日期','Date','时间'], ''))).filter(Boolean))];
       const latestDate = allDates.sort((a, b) => new Date(a) - new Date(b)).pop() || '';
-      const inputDate = normalizeDate(document.getElementById('financeDateFilter')?.value || '');
+      const inputDate = normalizeDateText(document.getElementById('financeDateFilter')?.value || '');
       const targetDate = inputDate || latestDate;
 
-      const rows = dbTrend.filter(r => normalizeDate(r['日期'] || r['Date']) === targetDate);
+      const rows = dbTrend.filter(r => normalizeDateText(getAny(r, ['日期','Date','时间'], '')) === targetDate);
       const labels = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`);
 
       const colorMap = {
@@ -2142,11 +2232,11 @@
       };
 
       const datasets = rows.map(r => {
-        const platform = getPlatform(r);
+        const platform = getTrendPlatform(r);
         const color = colorMap[platform.toUpperCase()] || colorMap[platform] || '#ffffff';
         return {
           label: platform,
-          data: labels.map((_, i) => trendNumber(getHourValue(r, i))),
+          data: labels.map((_, i) => toRateNumber(getTrendHourValue(r, i))),
           borderColor: color,
           backgroundColor: color,
           borderWidth: 2.5,
@@ -2173,17 +2263,41 @@
             }
           },
           scales: {
-            x: { ticks: { color: '#9fb0cf', maxTicksLimit: 12 }, grid: { color: 'rgba(148,163,184,.08)' } },
-            y: {
-              beginAtZero: true,
-              ticks: { color: '#9fb0cf', callback: v => v + '%' },
-              grid: { color: 'rgba(148,163,184,.08)' }
-            }
+            x: { ticks: { color:'#9fb0cf', maxTicksLimit: 12 }, grid:{ color:'rgba(148,163,184,.08)' } },
+            y: { beginAtZero:true, ticks:{ color:'#9fb0cf', callback:v => v + '%' }, grid:{ color:'rgba(148,163,184,.08)' } }
           }
         }
       });
 
       setStatus(rows.length ? `${targetDate} (${rows.length} 平台)` : `没有找到 ${targetDate}`);
+    }
+
+    function renderFinanceTable(rows) {
+      const body = document.getElementById('financeReportBody');
+      const info = document.getElementById('financeTableInfo');
+      if (!body) return;
+      if (info) info.innerText = `${rows.length} 条数据`;
+      body.innerHTML = rows.length ? rows.map(r => {
+        const orders = getFinanceOrders(r);
+        const success = getFinanceSuccess(r);
+        const fail = getFinanceFail(r);
+        const rate = getFinanceRate(r);
+        const shareRaw = getFinanceAmountShare(r);
+        const share = shareRaw !== '' ? (String(shareRaw).includes('%') ? String(shareRaw) : fmtRate(toRateNumber(shareRaw))) : '-';
+        return `
+          <tr>
+            <td>${esc(getFinanceDate(r) || '-')}</td>
+            <td><b>${esc(getFinancePlatform(r))}</b></td>
+            <td>${esc(getFinanceChannel(r))}</td>
+            <td>${fmtNumber(orders)}</td>
+            <td>${fmtNumber(success)}</td>
+            <td>${fmtNumber(fail)}</td>
+            <td>${fmtRate(rate)}</td>
+            <td>${fmtMoney(getFinanceAmount(r))}</td>
+            <td>${esc(share)}</td>
+          </tr>
+        `;
+      }).join('') : `<tr class="finance-empty-row"><td colspan="9">暂无数据：请检查 URL、发布权限、以及表头是否包含 日期 / 平台 / 总订单 / 成功 / 金额</td></tr>`;
     }
 
     function openDetail(masterIdx) {
