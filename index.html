@@ -2207,6 +2207,21 @@
 
       const setStatus = msg => { if (status) status.innerText = msg; };
 
+      function getArmeniaToday() {
+        const parts = new Intl.DateTimeFormat('en-CA', {
+          timeZone: 'Asia/Yerevan',
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit'
+        }).formatToParts(new Date());
+
+        const y = parts.find(p => p.type === 'year')?.value;
+        const m = parts.find(p => p.type === 'month')?.value;
+        const d = parts.find(p => p.type === 'day')?.value;
+
+        return `${Number(y)}/${Number(m)}/${Number(d)}`;
+      }
+
       if (!dbTrend || !dbTrend.length) {
         if (financeTrendChart) financeTrendChart.destroy();
         financeTrendChart = null;
@@ -2214,12 +2229,31 @@
         return;
       }
 
-      const allDates = [...new Set(dbTrend.map(r => normalizeDateText(getAny(r, ['日期','Date','时间'], ''))).filter(Boolean))];
-      const latestDate = allDates.sort((a, b) => new Date(a) - new Date(b)).pop() || '';
-      const inputDate = normalizeDateText(document.getElementById('financeDateFilter')?.value || '');
-      const targetDate = inputDate || latestDate;
+      const allDates = [...new Set(
+        dbTrend
+          .map(r => normalizeDateText(getAny(r, ['日期','Date','时间'], '')))
+          .filter(Boolean)
+      )];
 
-      const rows = dbTrend.filter(r => normalizeDateText(getAny(r, ['日期','Date','时间'], '')) === targetDate);
+      const armeniaToday = getArmeniaToday();
+      const inputDate = normalizeDateText(document.getElementById('financeDateFilter')?.value || '');
+
+      const latestDate = allDates
+        .slice()
+        .sort((a, b) => {
+          const da = new Date(a.replace(/\//g, '-'));
+          const db = new Date(b.replace(/\//g, '-'));
+          return da - db;
+        })
+        .pop() || '';
+
+      // 优先级：手动输入日期 > 亚美尼亚今天 > Sheet 最新日期
+      const targetDate = inputDate || (allDates.includes(armeniaToday) ? armeniaToday : latestDate);
+
+      const rows = dbTrend.filter(r =>
+        normalizeDateText(getAny(r, ['日期','Date','时间'], '')) === targetDate
+      );
+
       const labels = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`);
 
       const colorMap = {
@@ -2234,6 +2268,7 @@
       const datasets = rows.map(r => {
         const platform = getTrendPlatform(r);
         const color = colorMap[platform.toUpperCase()] || colorMap[platform] || '#ffffff';
+
         return {
           label: platform,
           data: labels.map((_, i) => toRateNumber(getTrendHourValue(r, i))),
@@ -2259,17 +2294,33 @@
           plugins: {
             legend: {
               display: true,
-              labels: { color: '#dbeafe', usePointStyle: true, padding: 18, font: { weight: 'bold' } }
+              labels: {
+                color: '#dbeafe',
+                usePointStyle: true,
+                padding: 18,
+                font: { weight: 'bold' }
+              }
             }
           },
           scales: {
-            x: { ticks: { color:'#9fb0cf', maxTicksLimit: 12 }, grid:{ color:'rgba(148,163,184,.08)' } },
-            y: { beginAtZero:true, ticks:{ color:'#9fb0cf', callback:v => v + '%' }, grid:{ color:'rgba(148,163,184,.08)' } }
+            x: {
+              ticks: { color:'#9fb0cf', maxTicksLimit: 12 },
+              grid:{ color:'rgba(148,163,184,.08)' }
+            },
+            y: {
+              beginAtZero:true,
+              ticks:{ color:'#9fb0cf', callback:v => v + '%' },
+              grid:{ color:'rgba(148,163,184,.08)' }
+            }
           }
         }
       });
 
-      setStatus(rows.length ? `${targetDate} (${rows.length} 平台)` : `没有找到 ${targetDate}`);
+      if (rows.length) {
+        setStatus(`${targetDate} (${rows.length} 平台)`);
+      } else {
+        setStatus(`没有找到 ${targetDate}｜亚美尼亚今天 ${armeniaToday}`);
+      }
     }
 
     function renderFinanceTable(rows) {
