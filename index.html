@@ -713,6 +713,68 @@
     .finance-chart-box{height:260px;position:relative}
     .finance-trend-full{margin-bottom:1rem}
     .finance-trend-full .finance-chart-box{height:390px}
+    .finance-trend-compare{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+    }
+    .finance-compare-card{
+      background:rgba(8,17,31,.36);
+      border:1px solid rgba(148,163,184,.15);
+      border-radius:18px;
+      padding:14px;
+      min-width:0;
+    }
+    .finance-compare-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      margin-bottom:10px;
+      color:#fff;
+      font-size:.78rem;
+      font-weight:900;
+    }
+    .finance-compare-date{
+      color:#9fb0cf;
+      font-size:.64rem;
+      font-weight:900;
+      white-space:nowrap;
+    }
+    .finance-compare-main{
+      font-size:1.25rem;
+      font-weight:900;
+      color:#eaf2ff;
+      margin-bottom:6px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .finance-compare-sub{
+      font-size:.68rem;
+      font-weight:900;
+      color:#9fb0cf;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      margin-top:5px;
+    }
+    .finance-compare-diff.up{color:#34d399}
+    .finance-compare-diff.down{color:#f87171}
+    .finance-compare-diff.flat{color:#cbd5e1}
+    .finance-compare-empty{
+      grid-column:1/-1;
+      padding:14px;
+      border-radius:16px;
+      border:1px dashed rgba(147,197,253,.25);
+      color:#9fb0cf;
+      font-size:.76rem;
+      font-weight:900;
+      background:rgba(96,165,250,.06);
+      text-align:center;
+    }
     .finance-platform-grid{
       display:grid;
       grid-template-columns:repeat(2,minmax(0,1fr));
@@ -1084,6 +1146,9 @@
         <div class="finance-panel finance-trend-full">
           <div class="finance-panel-title"><span><i class="fas fa-chart-area"></i> 24小时成功率趋势</span><small id="financeTrendStatus">等待数据</small></div>
           <div class="finance-chart-box"><canvas id="financeTrendChart"></canvas></div>
+          <div class="finance-trend-compare" id="financeTrendCompare">
+            <div class="finance-compare-empty">等待 24小时趋势数据</div>
+          </div>
         </div>
 
         <div class="finance-empty-note" id="financeSheetNotice">
@@ -2203,29 +2268,113 @@
     function renderFinanceTrend() {
       const canvas = document.getElementById('financeTrendChart');
       const status = document.getElementById('financeTrendStatus');
+      const compareBox = document.getElementById('financeTrendCompare');
       if (!canvas) return;
 
+      const labels = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`);
       const setStatus = msg => { if (status) status.innerText = msg; };
 
-      function getArmeniaToday() {
-        const parts = new Intl.DateTimeFormat('en-CA', {
-          timeZone: 'Asia/Yerevan',
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit'
-        }).formatToParts(new Date());
+      function getArmeniaDate(offsetDays = 0) {
+        const now = new Date();
+        const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+        const yrv = new Date(utc + 4 * 3600000);
+        yrv.setDate(yrv.getDate() + offsetDays);
+        return `${yrv.getFullYear()}/${yrv.getMonth() + 1}/${yrv.getDate()}`;
+      }
 
-        const y = parts.find(p => p.type === 'year')?.value;
-        const m = parts.find(p => p.type === 'month')?.value;
-        const d = parts.find(p => p.type === 'day')?.value;
+      function dateToObj(v) {
+        const n = normalizeDateText(v);
+        const parts = n.split('/').map(x => Number(x));
+        if (parts.length < 3 || parts.some(x => !x)) return null;
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+      }
 
-        return `${Number(y)}/${Number(m)}/${Number(d)}`;
+      function shiftDate(dateText, offsetDays) {
+        const d = dateToObj(dateText);
+        if (!d) return '';
+        d.setDate(d.getDate() + offsetDays);
+        return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`;
+      }
+
+      function trendRowsByDate(dateText) {
+        return dbTrend.filter(r =>
+          normalizeDateText(getAny(r, ['日期','Date','时间'], '')) === dateText
+        );
+      }
+
+      function hourValues(row) {
+        return labels.map((_, i) => toRateNumber(getTrendHourValue(row, i)));
+      }
+
+      function rowAvg(row) {
+        const vals = hourValues(row).filter(v => Number.isFinite(v) && v > 0);
+        if (!vals.length) return 0;
+        return vals.reduce((a, b) => a + b, 0) / vals.length;
+      }
+
+      function rowsAvg(rows) {
+        const vals = rows.map(rowAvg).filter(v => v > 0);
+        if (!vals.length) return 0;
+        return vals.reduce((a, b) => a + b, 0) / vals.length;
+      }
+
+      function renderTrendCompare(targetDate, todayRows, yesterdayRows, twoDaysRows) {
+        if (!compareBox) return;
+
+        const todayAvg = rowsAvg(todayRows);
+        const yAvg = rowsAvg(yesterdayRows);
+        const d2Avg = rowsAvg(twoDaysRows);
+
+        const diffClass = v => v > 0 ? 'up' : v < 0 ? 'down' : 'flat';
+        const diffText = v => {
+          if (!Number.isFinite(v)) return '0.00%';
+          return `${v >= 0 ? '+' : ''}${v.toFixed(2)}%`;
+        };
+
+        const yDiff = todayAvg - yAvg;
+        const d2Diff = todayAvg - d2Avg;
+
+        compareBox.innerHTML = `
+          <div class="finance-compare-card">
+            <div class="finance-compare-title">
+              <span>今日24小时平均</span>
+              <span class="finance-compare-date">${esc(targetDate)}</span>
+            </div>
+            <div class="finance-compare-main">${fmtRate(todayAvg)}</div>
+            <div class="finance-compare-sub"><span>平台数量</span><b>${todayRows.length}</b></div>
+          </div>
+
+          <div class="finance-compare-card">
+            <div class="finance-compare-title">
+              <span>对比昨日</span>
+              <span class="finance-compare-date">${esc(shiftDate(targetDate, -1))}</span>
+            </div>
+            <div class="finance-compare-main">${fmtRate(yAvg)}</div>
+            <div class="finance-compare-sub">
+              <span>今日 - 昨日</span>
+              <b class="finance-compare-diff ${diffClass(yDiff)}">${diffText(yDiff)}</b>
+            </div>
+          </div>
+
+          <div class="finance-compare-card">
+            <div class="finance-compare-title">
+              <span>对比前日</span>
+              <span class="finance-compare-date">${esc(shiftDate(targetDate, -2))}</span>
+            </div>
+            <div class="finance-compare-main">${fmtRate(d2Avg)}</div>
+            <div class="finance-compare-sub">
+              <span>今日 - 前日</span>
+              <b class="finance-compare-diff ${diffClass(d2Diff)}">${diffText(d2Diff)}</b>
+            </div>
+          </div>
+        `;
       }
 
       if (!dbTrend || !dbTrend.length) {
         if (financeTrendChart) financeTrendChart.destroy();
         financeTrendChart = null;
         setStatus('没有读取到趋势数据');
+        if (compareBox) compareBox.innerHTML = `<div class="finance-compare-empty">没有读取到趋势数据</div>`;
         return;
       }
 
@@ -2235,26 +2384,26 @@
           .filter(Boolean)
       )];
 
-      const armeniaToday = getArmeniaToday();
       const inputDate = normalizeDateText(document.getElementById('financeDateFilter')?.value || '');
+      const armeniaToday = getArmeniaDate(0);
 
       const latestDate = allDates
         .slice()
         .sort((a, b) => {
-          const da = new Date(a.replace(/\//g, '-'));
-          const db = new Date(b.replace(/\//g, '-'));
-          return da - db;
+          const da = dateToObj(a);
+          const db = dateToObj(b);
+          return (da ? da.getTime() : 0) - (db ? db.getTime() : 0);
         })
         .pop() || '';
 
-      // 优先级：手动输入日期 > 亚美尼亚今天 > Sheet 最新日期
+      // 图表只显示目标日期 24 小时；下方显示目标日期对比前 1 天、前 2 天
       const targetDate = inputDate || (allDates.includes(armeniaToday) ? armeniaToday : latestDate);
+      const yesterdayDate = shiftDate(targetDate, -1);
+      const twoDaysDate = shiftDate(targetDate, -2);
 
-      const rows = dbTrend.filter(r =>
-        normalizeDateText(getAny(r, ['日期','Date','时间'], '')) === targetDate
-      );
-
-      const labels = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`);
+      const rows = trendRowsByDate(targetDate);
+      const yRows = trendRowsByDate(yesterdayDate);
+      const d2Rows = trendRowsByDate(twoDaysDate);
 
       const colorMap = {
         '66GAME':'#34d399',
@@ -2262,7 +2411,8 @@
         'XX7':'#fbbf24',
         'XX6':'#38bdf8',
         'XX5':'#a78bfa',
-        'YY9':'#f87171'
+        'YY9':'#f87171',
+        'BDSPIN':'#22c55e'
       };
 
       const datasets = rows.map(r => {
@@ -2271,7 +2421,7 @@
 
         return {
           label: platform,
-          data: labels.map((_, i) => toRateNumber(getTrendHourValue(r, i))),
+          data: hourValues(r),
           borderColor: color,
           backgroundColor: color,
           borderWidth: 2.5,
@@ -2292,6 +2442,11 @@
           maintainAspectRatio: false,
           interaction: { mode: 'index', intersect: false },
           plugins: {
+            tooltip: {
+              callbacks: {
+                label: ctx => `${ctx.dataset.label}: ${Number(ctx.parsed.y || 0).toFixed(2)}%`
+              }
+            },
             legend: {
               display: true,
               labels: {
@@ -2304,11 +2459,12 @@
           },
           scales: {
             x: {
-              ticks: { color:'#9fb0cf', maxTicksLimit: 12 },
+              ticks: { color:'#9fb0cf', maxTicksLimit: 24 },
               grid:{ color:'rgba(148,163,184,.08)' }
             },
             y: {
               beginAtZero:true,
+              suggestedMax: 100,
               ticks:{ color:'#9fb0cf', callback:v => v + '%' },
               grid:{ color:'rgba(148,163,184,.08)' }
             }
@@ -2316,8 +2472,10 @@
         }
       });
 
+      renderTrendCompare(targetDate, rows, yRows, d2Rows);
+
       if (rows.length) {
-        setStatus(`${targetDate} (${rows.length} 平台)`);
+        setStatus(`${targetDate} 24小时｜昨日 ${yesterdayDate}｜前日 ${twoDaysDate}`);
       } else {
         setStatus(`没有找到 ${targetDate}｜亚美尼亚今天 ${armeniaToday}`);
       }
