@@ -1931,7 +1931,7 @@
 
         if (notice) {
           notice.innerHTML = URL_FINANCE
-            ? `<i class="fas fa-circle-check"></i><span>财务报表已尝试连接 Google Sheet。当前读取 ${dbFinance.length} 条数据。</span>`
+            ? `<i class="fas fa-circle-check"></i><span>Google Sheet 已连接。财务报表 ${dbFinance.length} 条，24小时趋势 ${dbTrend.length} 条。</span>`
             : `<i class="fas fa-circle-info"></i><span>这里已经预留 Google Sheet 数据接口。你只需要把 URL_FINANCE / URL_TREND 换成对应 sheet 的 CSV 链接即可。</span>`;
         }
 
@@ -1970,12 +1970,27 @@
       renderFinanceReport();
     }
 
+    function normalizeFinanceDate(v) {
+      const raw = String(v || '').trim();
+      if (!raw) return '';
+      const cleaned = raw.replace(/-/g, '/').replace(/\./g, '/').replace(/\s+/g, '');
+      const parts = cleaned.split('/').filter(Boolean);
+      if (parts.length >= 3 && parts[0].length === 4) {
+        return `${Number(parts[0])}/${Number(parts[1])}/${Number(parts[2])}`;
+      }
+      if (parts.length >= 3 && parts[2].length === 4) {
+        return `${Number(parts[2])}/${Number(parts[0])}/${Number(parts[1])}`;
+      }
+      return cleaned;
+    }
+
     function getFilteredFinanceRows() {
-      const date = String(document.getElementById('financeDateFilter')?.value || '').trim();
+      const dateInput = normalizeFinanceDate(document.getElementById('financeDateFilter')?.value || '');
       const platform = document.getElementById('financePlatformFilter')?.value || '';
       const channel = document.getElementById('financeChannelFilter')?.value || '';
       return dbFinance.filter(r => {
-        const okDate = !date || String(r['日期'] || '').includes(date);
+        const rowDate = normalizeFinanceDate(r['日期'] || r['Date'] || '');
+        const okDate = !dateInput || rowDate === dateInput || rowDate.includes(dateInput);
         const okPlatform = !platform || r['平台'] === platform;
         const okChannel = !channel || r['通道'] === channel;
         return okDate && okPlatform && okChannel;
