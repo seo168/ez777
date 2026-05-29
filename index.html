@@ -813,7 +813,7 @@
       white-space:nowrap;
     }
     .finance-table-wrap{overflow-x:auto}
-    .finance-table-wrap table{min-width:980px}
+    .finance-table-wrap table{min-width:1180px}
     .finance-empty-row td{
       padding:2rem!important;
       color:#9fb0cf;
@@ -1211,7 +1211,7 @@
               </tr>
             </thead>
             <tbody id="financeReportBody">
-              <tr class="finance-empty-row"><td colspan="11">暂无数据，请先连接 Google Sheet</td></tr>
+              <tr class="finance-empty-row"><td colspan="9">暂无数据，请先连接 Google Sheet</td></tr>
             </tbody>
           </table>
         </div>
@@ -2164,13 +2164,57 @@
       return orders ? getFinanceSuccess(row) / orders * 100 : 0;
     }
 
+    function financeDateToObj(v) {
+      const n = normalizeDateText(v);
+      const parts = n.split('/').map(x => Number(x));
+      if (parts.length < 3 || parts.some(x => !Number.isFinite(x) || x <= 0)) return null;
+      return new Date(parts[0], parts[1] - 1, parts[2]);
+    }
+
+    function financeDateFromObj(d) {
+      return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`;
+    }
+
+    function getIndiaTodayObj() {
+      const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Asia/Kolkata',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).formatToParts(new Date());
+
+      const y = Number(parts.find(p => p.type === 'year')?.value || 0);
+      const m = Number(parts.find(p => p.type === 'month')?.value || 0);
+      const d = Number(parts.find(p => p.type === 'day')?.value || 0);
+      return new Date(y, m - 1, d);
+    }
+
+    function getFinanceAutoDateSet(days = 3) {
+      const indiaToday = getIndiaTodayObj();
+      const validDates = [...new Set(dbFinance.map(r => getFinanceDate(r)).filter(Boolean))]
+        .map(dateText => ({ dateText, obj: financeDateToObj(dateText) }))
+        .filter(x => x.obj && x.obj.getTime() <= indiaToday.getTime())
+        .sort((a, b) => b.obj.getTime() - a.obj.getTime());
+
+      const base = validDates[0]?.obj || indiaToday;
+      const result = new Set();
+      for (let i = 0; i < days; i++) {
+        const d = new Date(base);
+        d.setDate(d.getDate() - i);
+        result.add(financeDateFromObj(d));
+      }
+      return result;
+    }
+
     function getFilteredFinanceRows() {
       const date = normalizeDateText(document.getElementById('financeDateFilter')?.value || '');
       const platform = document.getElementById('financePlatformFilter')?.value || '';
       const channel = document.getElementById('financeChannelFilter')?.value || '';
+      const autoDates = date ? null : getFinanceAutoDateSet(3);
+
       return dbFinance.filter(r => {
         const rowDate = getFinanceDate(r);
-        const okDate = !date || rowDate.includes(date);
+        const okDate = date ? rowDate.includes(date) : autoDates.has(rowDate);
         const okPlatform = !platform || getFinancePlatform(r) === platform;
         const okChannel = !channel || getFinanceChannel(r) === channel;
         return okDate && okPlatform && okChannel;
@@ -2407,9 +2451,8 @@
         })
         .pop() || '';
 
-      // 图表固定优先显示印度今天；不要因为 Sheet 里面有未来日期就跳到未来。
-      // 如果手动输入日期，则显示手动输入的日期。
-      const targetDate = inputDate || indiaToday;
+      // 图表只显示目标日期 24 小时；下方显示目标日期对比前 1 天、前 2 天
+      const targetDate = inputDate || (allDates.includes(indiaToday) ? indiaToday : latestDate);
       const yesterdayDate = shiftDate(targetDate, -1);
       const twoDaysDate = shiftDate(targetDate, -2);
 
@@ -2493,102 +2536,97 @@
       }
     }
 
+    function normalizeChannelName(name) {
+      const s = String(name || '').trim();
+      if (s.includes('唤醒')) return '唤醒';
+      if (s.includes('扫码')) return '扫码';
+      if (s.includes('原生')) return '原生';
+      return s || '其他';
+    }
+
     function renderFinanceTable(rows) {
       const body = document.getElementById('financeReportBody');
       const info = document.getElementById('financeTableInfo');
       if (!body) return;
 
-      function normalizePayChannel(channel) {
-        const c = String(channel || '').replace(/\s+/g, '').toLowerCase();
-        if (c.includes('唤醒') || c.includes('wake') || c.includes('awaken')) return '唤醒';
-        if (c.includes('扫码') || c.includes('scan') || c.includes('qr')) return '扫码';
-        if (c.includes('原生') || c.includes('native')) return '原生';
-        return '其他';
-      }
+      const grouped = {};
 
-      // 只改财务详细数据表：同一天 + 同平台 合并成 1 行，3 个支付类型放到同一行显示。
-      const groupedMap = {};
       rows.forEach(r => {
         const date = getFinanceDate(r) || '-';
-        const platform = getFinancePlatform(r) || '-';
+        const platform = getFinancePlatform(r);
         const key = `${date}__${platform}`;
-        const channel = normalizePayChannel(getFinanceChannel(r));
-        const orders = getFinanceOrders(r);
-        const success = getFinanceSuccess(r);
-        const fail = getFinanceFail(r);
-        const amount = getFinanceAmount(r);
-        const rate = getFinanceRate(r);
+        const ch = normalizeChannelName(getFinanceChannel(r));
 
-        if (!groupedMap[key]) {
-          groupedMap[key] = {
+        if (!grouped[key]) {
+          grouped[key] = {
             date,
             platform,
-            wakeOrders: 0,
-            scanOrders: 0,
-            nativeOrders: 0,
-            otherOrders: 0,
-            totalOrders: 0,
+            channels: {
+              '唤醒': 0,
+              '扫码': 0,
+              '原生': 0
+            },
+            orders: 0,
             success: 0,
             fail: 0,
-            amount: 0,
-            weightedRateBase: 0,
-            weightedRateValue: 0
+            amount: 0
           };
         }
 
-        const g = groupedMap[key];
-        if (channel === '唤醒') g.wakeOrders += orders;
-        else if (channel === '扫码') g.scanOrders += orders;
-        else if (channel === '原生') g.nativeOrders += orders;
-        else g.otherOrders += orders;
+        const orders = getFinanceOrders(r);
+        grouped[key].orders += orders;
+        grouped[key].success += getFinanceSuccess(r);
+        grouped[key].fail += getFinanceFail(r);
+        grouped[key].amount += getFinanceAmount(r);
 
-        g.totalOrders += orders;
-        g.success += success;
-        g.fail += fail;
-        g.amount += amount;
-
-        // 如果表里成功数为空但成功率有值，也能保持合并后的成功率准确。
-        if (orders > 0) {
-          g.weightedRateBase += orders;
-          g.weightedRateValue += rate * orders;
+        if (grouped[key].channels[ch] !== undefined) {
+          grouped[key].channels[ch] += orders;
         }
       });
 
-      const groupedRows = Object.values(groupedMap).sort((a, b) => {
-        const da = new Date(a.date).getTime() || 0;
-        const db = new Date(b.date).getTime() || 0;
-        if (da !== db) return db - da;
-        return String(a.platform).localeCompare(String(b.platform));
+      const dateWeight = d => {
+        const obj = financeDateToObj(d);
+        return obj ? obj.getTime() : 0;
+      };
+
+      const platformOrder = ['66GAME','YYGAME','XX7','XX6','XX5','YY9','BDSPIN'];
+      const platformWeight = p => {
+        const idx = platformOrder.indexOf(String(p).toUpperCase());
+        return idx >= 0 ? idx : 999;
+      };
+
+      const list = Object.values(grouped).sort((a, b) => {
+        const dateDiff = dateWeight(b.date) - dateWeight(a.date);
+        if (dateDiff) return dateDiff;
+        return platformWeight(a.platform) - platformWeight(b.platform);
       });
 
-      const totalAmountAll = groupedRows.reduce((s, g) => s + g.amount, 0);
+      if (info) {
+        const dateText = [...new Set(list.map(x => x.date))].join(' / ');
+        info.innerText = list.length
+          ? `${list.length} 行｜最近3天：${dateText}`
+          : '0 条数据';
+      }
 
-      if (info) info.innerText = `${groupedRows.length} 平台数据`;
-
-      body.innerHTML = groupedRows.length ? groupedRows.map(g => {
-        const rate = g.totalOrders && g.success
-          ? (g.success / g.totalOrders) * 100
-          : (g.weightedRateBase ? g.weightedRateValue / g.weightedRateBase : 0);
-
-        const fail = g.fail || Math.max(g.totalOrders - g.success, 0);
-        const amountShare = totalAmountAll ? (g.amount / totalAmountAll * 100) : 0;
-
+      body.innerHTML = list.length ? list.map(v => {
+        const rate = v.orders ? v.success / v.orders * 100 : 0;
+        const share = v.amount ? '-' : '0.00%';
         return `
           <tr>
-            <td>${esc(g.date)}</td>
-            <td><b>${esc(g.platform)}</b></td>
-            <td>${fmtNumber(g.wakeOrders)}</td>
-            <td>${fmtNumber(g.scanOrders)}</td>
-            <td>${fmtNumber(g.nativeOrders)}</td>
-            <td>${fmtNumber(g.totalOrders)}</td>
-            <td>${fmtNumber(g.success)}</td>
-            <td>${fmtNumber(fail)}</td>
+            <td>${esc(v.date)}</td>
+            <td><b>${esc(v.platform)}</b></td>
+            <td>${fmtNumber(v.channels['唤醒'] || 0)}</td>
+            <td>${fmtNumber(v.channels['扫码'] || 0)}</td>
+            <td>${fmtNumber(v.channels['原生'] || 0)}</td>
+            <td>${fmtNumber(v.orders)}</td>
+            <td>${fmtNumber(v.success)}</td>
+            <td>${fmtNumber(v.fail)}</td>
             <td>${fmtRate(rate)}</td>
-            <td>${fmtMoney(g.amount)}</td>
-            <td>${fmtRate(amountShare)}</td>
+            <td>${fmtMoney(v.amount)}</td>
+            <td>${esc(share)}</td>
           </tr>
         `;
-      }).join('') : `<tr class="finance-empty-row"><td colspan="11">暂无数据：请检查 URL、发布权限、以及表头是否包含 日期 / 平台 / 总订单 / 成功 / 金额</td></tr>`;
+      }).join('') : `<tr class="finance-empty-row"><td colspan="11">暂无数据：默认只显示最近3天。请检查日期筛选 / Google Sheet 数据日期。</td></tr>`;
     }
 
     function openDetail(masterIdx) {
