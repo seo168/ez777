@@ -399,7 +399,7 @@
     }
     td{
       padding:1rem;
-      border-bottom:1px solid rgba(148,163,184,.06);
+      border-bottom:1px solid rgba(148,163,184,.10);
       font-size:.82rem;
       font-weight:800;
       text-align:center;
@@ -790,8 +790,8 @@
       gap:10px;
       padding:5px 8px;
       border-radius:10px;
-      background:rgba(8,17,31,.16);
-      border:1px solid rgba(148,163,184,.055);
+      background:rgba(8,17,31,.34);
+      border:1px solid rgba(148,163,184,.12);
       font-size:.66rem;
       font-weight:900;
       color:#cbd5e1;
@@ -806,83 +806,6 @@
       color:#9fb0cf;
       white-space:nowrap;
     }
-    .finance-metric-stack{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-      min-width:150px;
-    }
-    .finance-metric-line{
-      min-height:27px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:9px;
-      padding:5px 8px;
-      border-radius:10px;
-      background:rgba(8,17,31,.16);
-      border:1px solid rgba(148,163,184,.055);
-      font-size:.66rem;
-      font-weight:900;
-      color:#eaf2ff;
-      line-height:1.1;
-      white-space:nowrap;
-    }
-    .finance-metric-line.money{
-      min-width:170px;
-    }
-    .finance-metric-main{
-      min-width:58px;
-      text-align:right;
-      color:#f8fbff;
-    }
-    .finance-metric-compare{
-      display:flex;
-      align-items:center;
-      gap:4px;
-      justify-content:flex-end;
-      flex:0 0 auto;
-    }
-    .finance-compare-pill{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-width:42px;
-      padding:2px 5px;
-      border-radius:999px;
-      font-size:.55rem;
-      font-weight:900;
-      border:1px solid rgba(148,163,184,.07);
-      background:rgba(15,23,42,.20);
-      color:rgba(203,213,225,.72);
-    }
-    .finance-compare-pill.up{color:rgba(52,211,153,.86);background:rgba(52,211,153,.055)}
-    .finance-compare-pill.down{color:rgba(248,113,113,.86);background:rgba(248,113,113,.055)}
-    .finance-compare-pill.flat{color:rgba(203,213,225,.72);background:rgba(148,163,184,.045)}
-    .finance-scroll-tip{
-      margin-left:10px;
-      color:#7f92b3;
-      font-size:.68rem;
-      font-weight:900;
-      white-space:nowrap;
-    }
-    .finance-table-wrap{
-      max-height:680px;
-      overflow:auto;
-      position:relative;
-    }
-    .finance-table-wrap .table-head-bar{
-      position:sticky;
-      top:0;
-      z-index:9;
-    }
-    .finance-table-wrap thead th{
-      position:sticky;
-      top:64px;
-      z-index:8;
-      background:rgba(8,17,31,.96);
-      backdrop-filter:blur(12px);
-    }
     .finance-table-wrap td.finance-channel-cell{
       padding:.55rem .7rem;
       vertical-align:middle;
@@ -893,6 +816,164 @@
       white-space:normal;
       min-width:118px;
     }
+
+    .finance-detail-wrap{
+      overflow:hidden;
+    }
+    .finance-card-grid{
+      max-height:760px;
+      overflow:auto;
+      padding:14px;
+      display:grid;
+      grid-template-columns:repeat(2,minmax(520px,1fr));
+      gap:14px;
+      scrollbar-gutter:stable;
+    }
+    .finance-card-grid::-webkit-scrollbar{height:9px;width:9px}
+    .finance-card-grid::-webkit-scrollbar-thumb{background:rgba(147,197,253,.22);border-radius:999px}
+    .finance-report-card{
+      border:1px solid rgba(148,163,184,.16);
+      background:linear-gradient(145deg,rgba(15,23,42,.74),rgba(8,17,31,.46));
+      border-radius:22px;
+      overflow:hidden;
+      box-shadow:0 18px 48px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.035);
+    }
+    .finance-card-top{
+      display:grid;
+      grid-template-columns:minmax(130px,.9fr) minmax(120px,.8fr) minmax(0,2fr);
+      gap:10px;
+      align-items:center;
+      padding:14px 16px;
+      background:rgba(8,17,31,.42);
+      border-bottom:1px solid rgba(148,163,184,.12);
+    }
+    .finance-card-date{
+      color:#bfdbfe;
+      font-size:.8rem;
+      font-weight:900;
+      white-space:nowrap;
+    }
+    .finance-card-platform{
+      color:#fff;
+      font-size:1rem;
+      font-weight:900;
+      white-space:nowrap;
+    }
+    .finance-card-summary{
+      display:flex;
+      gap:8px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+      min-width:0;
+    }
+    .finance-summary-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:5px 9px;
+      border-radius:999px;
+      background:rgba(96,165,250,.08);
+      border:1px solid rgba(96,165,250,.11);
+      color:#cbd5e1;
+      font-size:.62rem;
+      font-weight:900;
+      white-space:nowrap;
+    }
+    .finance-summary-pill b{color:#fff;font-size:.68rem}
+    .finance-mini-table{
+      width:100%;
+      min-width:620px;
+      border-collapse:separate;
+      border-spacing:0;
+    }
+    .finance-mini-table th{
+      background:rgba(8,17,31,.34);
+      color:#9fb0cf;
+      font-size:.62rem;
+      font-weight:900;
+      padding:9px 10px;
+      border-bottom:1px solid rgba(148,163,184,.10);
+      text-align:right;
+      white-space:nowrap;
+    }
+    .finance-mini-table th:first-child{text-align:left;padding-left:16px}
+    .finance-mini-table td{
+      padding:10px;
+      border-bottom:1px solid rgba(148,163,184,.075);
+      text-align:right;
+      white-space:nowrap;
+      vertical-align:middle;
+    }
+    .finance-mini-table tr:last-child td{border-bottom:none}
+    .finance-mini-table td:first-child{text-align:left;padding-left:16px}
+    .finance-channel-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-size:.72rem;
+      font-weight:900;
+      color:#eaf2ff;
+    }
+    .finance-channel-dot{
+      width:9px;
+      height:9px;
+      border-radius:50%;
+      background:#60a5fa;
+      box-shadow:0 0 0 3px rgba(96,165,250,.08);
+    }
+    .finance-channel-dot.scan{background:#a78bfa;box-shadow:0 0 0 3px rgba(167,139,250,.08)}
+    .finance-channel-dot.native{background:#fbbf24;box-shadow:0 0 0 3px rgba(251,191,36,.08)}
+    .finance-value-main{
+      display:block;
+      color:#f8fbff;
+      font-size:.78rem;
+      font-weight:900;
+      line-height:1.1;
+    }
+    .finance-value-sub{
+      margin-top:5px;
+      display:flex;
+      gap:4px;
+      justify-content:flex-end;
+      align-items:center;
+    }
+    .finance-small-compare{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:38px;
+      padding:2px 5px;
+      border-radius:999px;
+      font-size:.52rem;
+      font-weight:900;
+      color:rgba(203,213,225,.66);
+      background:rgba(148,163,184,.04);
+      border:1px solid rgba(148,163,184,.06);
+    }
+    .finance-small-compare.up{color:rgba(52,211,153,.88);background:rgba(52,211,153,.055)}
+    .finance-small-compare.down{color:rgba(248,113,113,.88);background:rgba(248,113,113,.055)}
+    .finance-small-compare.flat{color:rgba(203,213,225,.68)}
+    .finance-empty-card{
+      grid-column:1/-1;
+      padding:2rem;
+      text-align:center;
+      color:#9fb0cf;
+      font-size:.82rem;
+      font-weight:900;
+      border:1px dashed rgba(147,197,253,.22);
+      border-radius:18px;
+      background:rgba(96,165,250,.05);
+    }
+    @media(max-width:1200px){
+      .finance-card-grid{grid-template-columns:1fr;overflow-x:auto}
+      .finance-report-card{min-width:720px}
+    }
+    @media(max-width:700px){
+      .finance-card-top{grid-template-columns:1fr;align-items:start}
+      .finance-card-summary{justify-content:flex-start}
+      .finance-report-card{min-width:680px}
+    }
+
     .finance-platform-grid{
       display:grid;
       grid-template-columns:repeat(2,minmax(0,1fr));
@@ -931,7 +1012,7 @@
       white-space:nowrap;
     }
     .finance-table-wrap{overflow-x:auto}
-    .finance-table-wrap table{min-width:1580px}
+    .finance-table-wrap table{min-width:1180px}
     .finance-empty-row td{
       padding:2rem!important;
       color:#9fb0cf;
@@ -1317,23 +1398,15 @@
           </div>
         </div>
 
-        <div class="table-container finance-table-wrap">
+                <div class="table-container finance-detail-wrap">
           <div class="table-head-bar">
             <span><i class="fas fa-table"></i> 财务详细数据表</span>
             <span><span id="financeTableInfo" style="font-size:.76rem;font-weight:900;color:#9fb0cf;">0 条数据</span><span class="finance-scroll-tip">← 左右滑动查看更多 →</span></span>
           </div>
-          <table>
-            <thead>
-              <tr>
-                <th>日期</th><th>平台</th><th class="finance-small-th">总充值成功金额（公式）</th><th>渠道</th><th>总订单</th><th>成功</th><th>金额</th><th>成功率</th><th>金额占比</th>
-              </tr>
-            </thead>
-            <tbody id="financeReportBody">
-              <tr class="finance-empty-row"><td colspan="9">暂无数据，请先连接 Google Sheet</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+          <div class="finance-card-grid" id="financeReportBody">
+            <div class="finance-empty-card">暂无数据，请先连接 Google Sheet</div>
+          </div>
+        </div>      </div>
 
       <div id="maintenance" class="page-content">
         <div class="sub-page-title"><h3><i class="fas fa-screwdriver-wrench"></i> 维护数据</h3></div>
@@ -2670,6 +2743,10 @@
 
       const channelOrder = ['唤醒', '扫码', '原生'];
 
+      function emptyChannel() {
+        return { orders:0, success:0, amount:0, rate:0, amountShare:0, hasRow:false };
+      }
+
       function buildGrouped(sourceRows) {
         const grouped = {};
 
@@ -2685,18 +2762,19 @@
               platform,
               rechargeSuccessAmount: 0,
               channels: {
-                '唤醒': { orders:0, success:0, amount:0, rate:0, amountShare:0, hasRow:false },
-                '扫码': { orders:0, success:0, amount:0, rate:0, amountShare:0, hasRow:false },
-                '原生': { orders:0, success:0, amount:0, rate:0, amountShare:0, hasRow:false }
+                '唤醒': emptyChannel(),
+                '扫码': emptyChannel(),
+                '原生': emptyChannel()
               }
             };
           }
 
-          grouped[key].rechargeSuccessAmount += getFinanceRechargeSuccessAmount(r);
-
-          if (!grouped[key].channels[ch]) {
-            grouped[key].channels[ch] = { orders:0, success:0, amount:0, rate:0, amountShare:0, hasRow:false };
+          const rechargeValue = getFinanceRechargeSuccessAmount(r);
+          if (rechargeValue) {
+            grouped[key].rechargeSuccessAmount = Math.max(grouped[key].rechargeSuccessAmount, rechargeValue);
           }
+
+          if (!grouped[key].channels[ch]) grouped[key].channels[ch] = emptyChannel();
 
           const orders = getFinanceOrders(r);
           const success = getFinanceSuccess(r);
@@ -2746,9 +2824,7 @@
 
       if (info) {
         const dateText = [...new Set(list.map(x => x.date))].join(' / ');
-        info.innerText = list.length
-          ? `${list.length} 行｜最近3天：${dateText}`
-          : '0 条数据';
+        info.innerText = list.length ? `${list.length} 张卡片｜最近3天：${dateText}` : '0 条数据';
       }
 
       function shiftDateText(dateText, offset) {
@@ -2773,68 +2849,93 @@
       }
 
       function calcCompare(current, previous, mode) {
-        if (!previous || previous === 0) {
-          if (!current) return 0;
-          return 100;
-        }
+        if (previous === null || previous === undefined) return null;
+        if (!previous) return current ? 100 : 0;
         if (mode === 'point') return current - previous;
         return ((current - previous) / previous) * 100;
       }
 
-      function compareBadge(current, prev1, prev2, metric, mode) {
+      function smallCompare(current, prev1, prev2, metric, mode = 'ratio') {
         const p1 = prev1 ? metric(prev1) : null;
         const p2 = prev2 ? metric(prev2) : null;
-        const d1 = p1 === null ? null : calcCompare(current, p1, mode);
-        const d2 = p2 === null ? null : calcCompare(current, p2, mode);
-
+        const d1 = calcCompare(current, p1, mode);
+        const d2 = calcCompare(current, p2, mode);
         const text = n => {
           if (n === null || !Number.isFinite(n)) return '-';
           const sign = n > 0 ? '+' : '';
           return `${sign}${n.toFixed(1)}%`;
         };
-
-        return `<span class="finance-metric-compare">
-          <em class="finance-compare-pill ${diffClass(d1)}" title="对比昨天">昨 ${text(d1)}</em>
-          <em class="finance-compare-pill ${diffClass(d2)}" title="对比前天">前 ${text(d2)}</em>
+        return `<span class="finance-value-sub">
+          <em class="finance-small-compare ${diffClass(d1)}" title="对比昨天">昨 ${text(d1)}</em>
+          <em class="finance-small-compare ${diffClass(d2)}" title="对比前天">前 ${text(d2)}</em>
         </span>`;
       }
 
-      const channelNameHtml = () => `
-        <div class="finance-channel-stack">
-          ${channelOrder.map(ch => `<div class="finance-channel-line"><span class="finance-channel-name">${ch}订单</span></div>`).join('')}
-        </div>
-      `;
+      function metricCell(v, ch, metric, formatter, mode = 'ratio') {
+        const cur = v.channels[ch] || emptyChannel();
+        const currentValue = metric(cur);
+        const prev1 = getPrevChannel(v, ch, -1);
+        const prev2 = getPrevChannel(v, ch, -2);
+        return `<span class="finance-value-main">${formatter(cur)}</span>${smallCompare(currentValue, prev1, prev2, metric, mode)}`;
+      }
 
-      const metricStackHtml = (v, metric, formatter, extraClass = '', mode = 'ratio') => `
-        <div class="finance-metric-stack">
-          ${channelOrder.map(ch => {
-            const curChannel = v.channels[ch] || {};
-            const currentValue = metric(curChannel);
-            const prev1 = getPrevChannel(v, ch, -1);
-            const prev2 = getPrevChannel(v, ch, -2);
-            return `<div class="finance-metric-line ${extraClass}">
-              <span class="finance-metric-main">${formatter(curChannel)}</span>
-              ${compareBadge(currentValue, prev1, prev2, metric, mode)}
-            </div>`;
-          }).join('')}
-        </div>
-      `;
+      function channelDotClass(ch) {
+        if (ch === '扫码') return 'scan';
+        if (ch === '原生') return 'native';
+        return '';
+      }
+
+      function totals(v) {
+        const orders = channelOrder.reduce((s,ch)=>s+(v.channels[ch]?.orders||0),0);
+        const success = channelOrder.reduce((s,ch)=>s+(v.channels[ch]?.success||0),0);
+        const amount = channelOrder.reduce((s,ch)=>s+(v.channels[ch]?.amount||0),0);
+        const rate = orders ? success / orders * 100 : 0;
+        return { orders, success, amount, rate };
+      }
 
       body.innerHTML = list.length ? list.map(v => {
+        const t = totals(v);
         return `
-          <tr>
-            <td>${esc(v.date)}</td>
-            <td><b>${esc(v.platform)}</b></td>
-            <td>${fmtMoney(v.rechargeSuccessAmount)}</td>
-            <td class="finance-channel-cell">${channelNameHtml()}</td>
-            <td>${metricStackHtml(v, c => c.orders || 0, c => fmtNumber(c.orders || 0))}</td>
-            <td>${metricStackHtml(v, c => c.success || 0, c => fmtNumber(c.success || 0))}</td>
-            <td>${metricStackHtml(v, c => c.amount || 0, c => fmtMoney(c.amount || 0), 'money')}</td>
-            <td>${metricStackHtml(v, c => c.rate || 0, c => fmtRate(c.rate || 0), '', 'point')}</td>
-            <td>${metricStackHtml(v, c => c.amountShare || 0, c => fmtRate(c.amountShare || 0), '', 'point')}</td>
-          </tr>
+          <div class="finance-report-card">
+            <div class="finance-card-top">
+              <div class="finance-card-date">${esc(v.date)}</div>
+              <div class="finance-card-platform">${esc(v.platform)}</div>
+              <div class="finance-card-summary">
+                <span class="finance-summary-pill">总充值 <b>${fmtMoney(v.rechargeSuccessAmount)}</b></span>
+                <span class="finance-summary-pill">总订单 <b>${fmtNumber(t.orders)}</b></span>
+                <span class="finance-summary-pill">成功率 <b>${fmtRate(t.rate)}</b></span>
+                <span class="finance-summary-pill">金额 <b>${fmtMoney(t.amount)}</b></span>
+              </div>
+            </div>
+            <div style="overflow-x:auto;">
+              <table class="finance-mini-table">
+                <thead>
+                  <tr>
+                    <th>渠道</th>
+                    <th>总订单</th>
+                    <th>成功</th>
+                    <th>金额</th>
+                    <th>成功率</th>
+                    <th>金额占比</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${channelOrder.map(ch => `
+                    <tr>
+                      <td><span class="finance-channel-chip"><i class="finance-channel-dot ${channelDotClass(ch)}"></i>${ch}订单</span></td>
+                      <td>${metricCell(v, ch, c => c.orders || 0, c => fmtNumber(c.orders || 0))}</td>
+                      <td>${metricCell(v, ch, c => c.success || 0, c => fmtNumber(c.success || 0))}</td>
+                      <td>${metricCell(v, ch, c => c.amount || 0, c => fmtMoney(c.amount || 0))}</td>
+                      <td>${metricCell(v, ch, c => c.rate || 0, c => fmtRate(c.rate || 0), 'point')}</td>
+                      <td>${metricCell(v, ch, c => c.amountShare || 0, c => fmtRate(c.amountShare || 0), 'point')}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
         `;
-      }).join('') : `<tr class="finance-empty-row"><td colspan="9">暂无数据：默认只显示最近3天。请检查日期筛选 / Google Sheet 数据日期。</td></tr>`;
+      }).join('') : `<div class="finance-empty-card">暂无数据：默认只显示最近3天。请检查日期筛选 / Google Sheet 数据日期。</div>`;
     }
 
     function openDetail(masterIdx) {
