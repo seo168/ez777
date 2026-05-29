@@ -806,6 +806,47 @@
       color:#9fb0cf;
       white-space:nowrap;
     }
+    .finance-metric-stack{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-width:92px;
+    }
+    .finance-metric-line{
+      min-height:25px;
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      padding:5px 8px;
+      border-radius:10px;
+      background:rgba(8,17,31,.34);
+      border:1px solid rgba(148,163,184,.12);
+      font-size:.66rem;
+      font-weight:900;
+      color:#eaf2ff;
+      line-height:1.1;
+      white-space:nowrap;
+    }
+    .finance-metric-line.money{
+      min-width:110px;
+    }
+    .finance-table-wrap{
+      max-height:680px;
+      overflow:auto;
+      position:relative;
+    }
+    .finance-table-wrap .table-head-bar{
+      position:sticky;
+      top:0;
+      z-index:9;
+    }
+    .finance-table-wrap thead th{
+      position:sticky;
+      top:64px;
+      z-index:8;
+      background:rgba(8,17,31,.96);
+      backdrop-filter:blur(12px);
+    }
     .finance-table-wrap td.finance-channel-cell{
       padding:.55rem .7rem;
       vertical-align:middle;
@@ -2591,6 +2632,7 @@
       const info = document.getElementById('financeTableInfo');
       if (!body) return;
 
+      const channelOrder = ['唤醒', '扫码', '原生'];
       const grouped = {};
 
       rows.forEach(r => {
@@ -2605,25 +2647,32 @@
             platform,
             rechargeSuccessAmount: 0,
             channels: {
-              '唤醒': 0,
-              '扫码': 0,
-              '原生': 0
-            },
-            orders: 0,
-            success: 0,
-            amount: 0
+              '唤醒': { orders:0, success:0, amount:0, rate:0, amountShare:0, hasRow:false },
+              '扫码': { orders:0, success:0, amount:0, rate:0, amountShare:0, hasRow:false },
+              '原生': { orders:0, success:0, amount:0, rate:0, amountShare:0, hasRow:false }
+            }
           };
         }
 
-        const orders = getFinanceOrders(r);
-        grouped[key].orders += orders;
-        grouped[key].success += getFinanceSuccess(r);
-        grouped[key].amount += getFinanceAmount(r);
         grouped[key].rechargeSuccessAmount += getFinanceRechargeSuccessAmount(r);
 
-        if (grouped[key].channels[ch] !== undefined) {
-          grouped[key].channels[ch] += orders;
+        if (!grouped[key].channels[ch]) {
+          grouped[key].channels[ch] = { orders:0, success:0, amount:0, rate:0, amountShare:0, hasRow:false };
         }
+
+        const orders = getFinanceOrders(r);
+        const success = getFinanceSuccess(r);
+        const amount = getFinanceAmount(r);
+        const explicitRate = getFinanceRate(r);
+        const rawShare = getFinanceAmountShare(r);
+        const amountShare = rawShare !== '' ? toRateNumber(rawShare) : 0;
+
+        grouped[key].channels[ch].orders += orders;
+        grouped[key].channels[ch].success += success;
+        grouped[key].channels[ch].amount += amount;
+        grouped[key].channels[ch].rate = explicitRate || (orders ? success / orders * 100 : 0);
+        grouped[key].channels[ch].amountShare = amountShare;
+        grouped[key].channels[ch].hasRow = true;
       });
 
       const dateWeight = d => {
@@ -2643,8 +2692,6 @@
         return platformWeight(a.platform) - platformWeight(b.platform);
       });
 
-      const totalAmount = list.reduce((sum, v) => sum + (v.amount || 0), 0);
-
       if (info) {
         const dateText = [...new Set(list.map(x => x.date))].join(' / ');
         info.innerText = list.length
@@ -2652,26 +2699,30 @@
           : '0 条数据';
       }
 
+      const channelNameHtml = () => `
+        <div class="finance-channel-stack">
+          ${channelOrder.map(ch => `<div class="finance-channel-line"><span class="finance-channel-name">${ch}订单</span></div>`).join('')}
+        </div>
+      `;
+
+      const metricStackHtml = (v, formatter, extraClass = '') => `
+        <div class="finance-metric-stack">
+          ${channelOrder.map(ch => `<div class="finance-metric-line ${extraClass}">${formatter(v.channels[ch] || {})}</div>`).join('')}
+        </div>
+      `;
+
       body.innerHTML = list.length ? list.map(v => {
-        const rate = v.orders ? v.success / v.orders * 100 : 0;
-        const share = totalAmount ? v.amount / totalAmount * 100 : 0;
         return `
           <tr>
             <td>${esc(v.date)}</td>
             <td><b>${esc(v.platform)}</b></td>
             <td>${fmtMoney(v.rechargeSuccessAmount)}</td>
-            <td class="finance-channel-cell">
-              <div class="finance-channel-stack">
-                <div class="finance-channel-line"><span class="finance-channel-name">唤醒订单</span><b>${fmtNumber(v.channels['唤醒'] || 0)}</b></div>
-                <div class="finance-channel-line"><span class="finance-channel-name">扫码订单</span><b>${fmtNumber(v.channels['扫码'] || 0)}</b></div>
-                <div class="finance-channel-line"><span class="finance-channel-name">原生订单</span><b>${fmtNumber(v.channels['原生'] || 0)}</b></div>
-              </div>
-            </td>
-            <td>${fmtNumber(v.orders)}</td>
-            <td>${fmtNumber(v.success)}</td>
-            <td>${fmtMoney(v.amount)}</td>
-            <td>${fmtRate(rate)}</td>
-            <td>${fmtRate(share)}</td>
+            <td class="finance-channel-cell">${channelNameHtml()}</td>
+            <td>${metricStackHtml(v, c => fmtNumber(c.orders || 0))}</td>
+            <td>${metricStackHtml(v, c => fmtNumber(c.success || 0))}</td>
+            <td>${metricStackHtml(v, c => fmtMoney(c.amount || 0), 'money')}</td>
+            <td>${metricStackHtml(v, c => fmtRate(c.rate || 0))}</td>
+            <td>${metricStackHtml(v, c => fmtRate(c.amountShare || 0))}</td>
           </tr>
         `;
       }).join('') : `<tr class="finance-empty-row"><td colspan="9">暂无数据：默认只显示最近3天。请检查日期筛选 / Google Sheet 数据日期。</td></tr>`;
