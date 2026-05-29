@@ -399,7 +399,7 @@
     }
     td{
       padding:1rem;
-      border-bottom:1px solid rgba(148,163,184,.10);
+      border-bottom:1px solid rgba(148,163,184,.06);
       font-size:.82rem;
       font-weight:800;
       text-align:center;
@@ -790,8 +790,8 @@
       gap:10px;
       padding:5px 8px;
       border-radius:10px;
-      background:rgba(8,17,31,.34);
-      border:1px solid rgba(148,163,184,.12);
+      background:rgba(8,17,31,.16);
+      border:1px solid rgba(148,163,184,.055);
       font-size:.66rem;
       font-weight:900;
       color:#cbd5e1;
@@ -810,17 +810,18 @@
       display:flex;
       flex-direction:column;
       gap:6px;
-      min-width:92px;
+      min-width:150px;
     }
     .finance-metric-line{
-      min-height:25px;
+      min-height:27px;
       display:flex;
       align-items:center;
-      justify-content:flex-end;
+      justify-content:space-between;
+      gap:9px;
       padding:5px 8px;
       border-radius:10px;
-      background:rgba(8,17,31,.34);
-      border:1px solid rgba(148,163,184,.12);
+      background:rgba(8,17,31,.16);
+      border:1px solid rgba(148,163,184,.055);
       font-size:.66rem;
       font-weight:900;
       color:#eaf2ff;
@@ -828,7 +829,42 @@
       white-space:nowrap;
     }
     .finance-metric-line.money{
-      min-width:110px;
+      min-width:170px;
+    }
+    .finance-metric-main{
+      min-width:58px;
+      text-align:right;
+      color:#f8fbff;
+    }
+    .finance-metric-compare{
+      display:flex;
+      align-items:center;
+      gap:4px;
+      justify-content:flex-end;
+      flex:0 0 auto;
+    }
+    .finance-compare-pill{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:42px;
+      padding:2px 5px;
+      border-radius:999px;
+      font-size:.55rem;
+      font-weight:900;
+      border:1px solid rgba(148,163,184,.07);
+      background:rgba(15,23,42,.20);
+      color:rgba(203,213,225,.72);
+    }
+    .finance-compare-pill.up{color:rgba(52,211,153,.86);background:rgba(52,211,153,.055)}
+    .finance-compare-pill.down{color:rgba(248,113,113,.86);background:rgba(248,113,113,.055)}
+    .finance-compare-pill.flat{color:rgba(203,213,225,.72);background:rgba(148,163,184,.045)}
+    .finance-scroll-tip{
+      margin-left:10px;
+      color:#7f92b3;
+      font-size:.68rem;
+      font-weight:900;
+      white-space:nowrap;
     }
     .finance-table-wrap{
       max-height:680px;
@@ -895,7 +931,7 @@
       white-space:nowrap;
     }
     .finance-table-wrap{overflow-x:auto}
-    .finance-table-wrap table{min-width:1180px}
+    .finance-table-wrap table{min-width:1580px}
     .finance-empty-row td{
       padding:2rem!important;
       color:#9fb0cf;
@@ -1284,7 +1320,7 @@
         <div class="table-container finance-table-wrap">
           <div class="table-head-bar">
             <span><i class="fas fa-table"></i> 财务详细数据表</span>
-            <span id="financeTableInfo" style="font-size:.76rem;font-weight:900;color:#9fb0cf;">0 条数据</span>
+            <span><span id="financeTableInfo" style="font-size:.76rem;font-weight:900;color:#9fb0cf;">0 条数据</span><span class="finance-scroll-tip">← 左右滑动查看更多 →</span></span>
           </div>
           <table>
             <thead>
@@ -2633,47 +2669,63 @@
       if (!body) return;
 
       const channelOrder = ['唤醒', '扫码', '原生'];
-      const grouped = {};
 
-      rows.forEach(r => {
-        const date = getFinanceDate(r) || '-';
-        const platform = getFinancePlatform(r);
-        const key = `${date}__${platform}`;
-        const ch = normalizeChannelName(getFinanceChannel(r));
+      function buildGrouped(sourceRows) {
+        const grouped = {};
 
-        if (!grouped[key]) {
-          grouped[key] = {
-            date,
-            platform,
-            rechargeSuccessAmount: 0,
-            channels: {
-              '唤醒': { orders:0, success:0, amount:0, rate:0, amountShare:0, hasRow:false },
-              '扫码': { orders:0, success:0, amount:0, rate:0, amountShare:0, hasRow:false },
-              '原生': { orders:0, success:0, amount:0, rate:0, amountShare:0, hasRow:false }
-            }
-          };
-        }
+        sourceRows.forEach(r => {
+          const date = getFinanceDate(r) || '-';
+          const platform = getFinancePlatform(r);
+          const key = `${date}__${platform}`;
+          const ch = normalizeChannelName(getFinanceChannel(r));
 
-        grouped[key].rechargeSuccessAmount += getFinanceRechargeSuccessAmount(r);
+          if (!grouped[key]) {
+            grouped[key] = {
+              date,
+              platform,
+              rechargeSuccessAmount: 0,
+              channels: {
+                '唤醒': { orders:0, success:0, amount:0, rate:0, amountShare:0, hasRow:false },
+                '扫码': { orders:0, success:0, amount:0, rate:0, amountShare:0, hasRow:false },
+                '原生': { orders:0, success:0, amount:0, rate:0, amountShare:0, hasRow:false }
+              }
+            };
+          }
 
-        if (!grouped[key].channels[ch]) {
-          grouped[key].channels[ch] = { orders:0, success:0, amount:0, rate:0, amountShare:0, hasRow:false };
-        }
+          grouped[key].rechargeSuccessAmount += getFinanceRechargeSuccessAmount(r);
 
-        const orders = getFinanceOrders(r);
-        const success = getFinanceSuccess(r);
-        const amount = getFinanceAmount(r);
-        const explicitRate = getFinanceRate(r);
-        const rawShare = getFinanceAmountShare(r);
-        const amountShare = rawShare !== '' ? toRateNumber(rawShare) : 0;
+          if (!grouped[key].channels[ch]) {
+            grouped[key].channels[ch] = { orders:0, success:0, amount:0, rate:0, amountShare:0, hasRow:false };
+          }
 
-        grouped[key].channels[ch].orders += orders;
-        grouped[key].channels[ch].success += success;
-        grouped[key].channels[ch].amount += amount;
-        grouped[key].channels[ch].rate = explicitRate || (orders ? success / orders * 100 : 0);
-        grouped[key].channels[ch].amountShare = amountShare;
-        grouped[key].channels[ch].hasRow = true;
+          const orders = getFinanceOrders(r);
+          const success = getFinanceSuccess(r);
+          const amount = getFinanceAmount(r);
+          const explicitRate = getFinanceRate(r);
+          const rawShare = getFinanceAmountShare(r);
+          const amountShare = rawShare !== '' ? toRateNumber(rawShare) : 0;
+
+          grouped[key].channels[ch].orders += orders;
+          grouped[key].channels[ch].success += success;
+          grouped[key].channels[ch].amount += amount;
+          grouped[key].channels[ch].rate = explicitRate || (orders ? success / orders * 100 : 0);
+          grouped[key].channels[ch].amountShare = amountShare;
+          grouped[key].channels[ch].hasRow = true;
+        });
+
+        return grouped;
+      }
+
+      const currentGrouped = buildGrouped(rows);
+
+      const selectedPlatform = document.getElementById('financePlatformFilter')?.value || '';
+      const selectedChannel = document.getElementById('financeChannelFilter')?.value || '';
+      const compareRows = dbFinance.filter(r => {
+        const okPlatform = !selectedPlatform || getFinancePlatform(r) === selectedPlatform;
+        const okChannel = !selectedChannel || getFinanceChannel(r) === selectedChannel;
+        return okPlatform && okChannel;
       });
+      const allGrouped = buildGrouped(compareRows);
 
       const dateWeight = d => {
         const obj = financeDateToObj(d);
@@ -2686,7 +2738,7 @@
         return idx >= 0 ? idx : 999;
       };
 
-      const list = Object.values(grouped).sort((a, b) => {
+      const list = Object.values(currentGrouped).sort((a, b) => {
         const dateDiff = dateWeight(b.date) - dateWeight(a.date);
         if (dateDiff) return dateDiff;
         return platformWeight(a.platform) - platformWeight(b.platform);
@@ -2699,15 +2751,72 @@
           : '0 条数据';
       }
 
+      function shiftDateText(dateText, offset) {
+        const obj = financeDateToObj(dateText);
+        if (!obj) return '';
+        const d = new Date(obj);
+        d.setDate(d.getDate() + offset);
+        return financeDateFromObj(d);
+      }
+
+      function getPrevChannel(v, ch, offset) {
+        const d = shiftDateText(v.date, offset);
+        const prev = allGrouped[`${d}__${v.platform}`];
+        return prev?.channels?.[ch] || null;
+      }
+
+      function diffClass(n) {
+        if (!Number.isFinite(n)) return 'flat';
+        if (n > 0.05) return 'up';
+        if (n < -0.05) return 'down';
+        return 'flat';
+      }
+
+      function calcCompare(current, previous, mode) {
+        if (!previous || previous === 0) {
+          if (!current) return 0;
+          return 100;
+        }
+        if (mode === 'point') return current - previous;
+        return ((current - previous) / previous) * 100;
+      }
+
+      function compareBadge(current, prev1, prev2, metric, mode) {
+        const p1 = prev1 ? metric(prev1) : null;
+        const p2 = prev2 ? metric(prev2) : null;
+        const d1 = p1 === null ? null : calcCompare(current, p1, mode);
+        const d2 = p2 === null ? null : calcCompare(current, p2, mode);
+
+        const text = n => {
+          if (n === null || !Number.isFinite(n)) return '-';
+          const sign = n > 0 ? '+' : '';
+          return `${sign}${n.toFixed(1)}%`;
+        };
+
+        return `<span class="finance-metric-compare">
+          <em class="finance-compare-pill ${diffClass(d1)}" title="对比昨天">昨 ${text(d1)}</em>
+          <em class="finance-compare-pill ${diffClass(d2)}" title="对比前天">前 ${text(d2)}</em>
+        </span>`;
+      }
+
       const channelNameHtml = () => `
         <div class="finance-channel-stack">
           ${channelOrder.map(ch => `<div class="finance-channel-line"><span class="finance-channel-name">${ch}订单</span></div>`).join('')}
         </div>
       `;
 
-      const metricStackHtml = (v, formatter, extraClass = '') => `
+      const metricStackHtml = (v, metric, formatter, extraClass = '', mode = 'ratio') => `
         <div class="finance-metric-stack">
-          ${channelOrder.map(ch => `<div class="finance-metric-line ${extraClass}">${formatter(v.channels[ch] || {})}</div>`).join('')}
+          ${channelOrder.map(ch => {
+            const curChannel = v.channels[ch] || {};
+            const currentValue = metric(curChannel);
+            const prev1 = getPrevChannel(v, ch, -1);
+            const prev2 = getPrevChannel(v, ch, -2);
+            return `<div class="finance-metric-line ${extraClass}">
+              <span class="finance-metric-main">${formatter(curChannel)}</span>
+              ${compareBadge(currentValue, prev1, prev2, metric, mode)}
+            </div>`;
+          }).join('')}
         </div>
       `;
 
@@ -2718,11 +2827,11 @@
             <td><b>${esc(v.platform)}</b></td>
             <td>${fmtMoney(v.rechargeSuccessAmount)}</td>
             <td class="finance-channel-cell">${channelNameHtml()}</td>
-            <td>${metricStackHtml(v, c => fmtNumber(c.orders || 0))}</td>
-            <td>${metricStackHtml(v, c => fmtNumber(c.success || 0))}</td>
-            <td>${metricStackHtml(v, c => fmtMoney(c.amount || 0), 'money')}</td>
-            <td>${metricStackHtml(v, c => fmtRate(c.rate || 0))}</td>
-            <td>${metricStackHtml(v, c => fmtRate(c.amountShare || 0))}</td>
+            <td>${metricStackHtml(v, c => c.orders || 0, c => fmtNumber(c.orders || 0))}</td>
+            <td>${metricStackHtml(v, c => c.success || 0, c => fmtNumber(c.success || 0))}</td>
+            <td>${metricStackHtml(v, c => c.amount || 0, c => fmtMoney(c.amount || 0), 'money')}</td>
+            <td>${metricStackHtml(v, c => c.rate || 0, c => fmtRate(c.rate || 0), '', 'point')}</td>
+            <td>${metricStackHtml(v, c => c.amountShare || 0, c => fmtRate(c.amountShare || 0), '', 'point')}</td>
           </tr>
         `;
       }).join('') : `<tr class="finance-empty-row"><td colspan="9">暂无数据：默认只显示最近3天。请检查日期筛选 / Google Sheet 数据日期。</td></tr>`;
