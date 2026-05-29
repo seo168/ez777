@@ -2407,8 +2407,9 @@
         })
         .pop() || '';
 
-      // 图表只显示目标日期 24 小时；下方显示目标日期对比前 1 天、前 2 天
-      const targetDate = inputDate || (allDates.includes(indiaToday) ? indiaToday : latestDate);
+      // 图表固定优先显示印度今天；不要因为 Sheet 里面有未来日期就跳到未来。
+      // 如果手动输入日期，则显示手动输入的日期。
+      const targetDate = inputDate || indiaToday;
       const yesterdayDate = shiftDate(targetDate, -1);
       const twoDaysDate = shiftDate(targetDate, -2);
 
