@@ -1207,11 +1207,11 @@
           <table>
             <thead>
               <tr>
-                <th>日期</th><th>平台</th><th>通道</th><th>总订单</th><th>成功</th><th>失败</th><th>成功率</th><th>金额</th><th>金额占比</th>
+                <th>日期</th><th>平台</th><th>唤醒订单</th><th>扫码订单</th><th>原生订单</th><th>总订单</th><th>成功</th><th>失败</th><th>成功率</th><th>金额</th><th>金额占比</th>
               </tr>
             </thead>
             <tbody id="financeReportBody">
-              <tr class="finance-empty-row"><td colspan="9">暂无数据，请先连接 Google Sheet</td></tr>
+              <tr class="finance-empty-row"><td colspan="11">暂无数据，请先连接 Google Sheet</td></tr>
             </tbody>
           </table>
         </div>
@@ -2496,28 +2496,98 @@
       const body = document.getElementById('financeReportBody');
       const info = document.getElementById('financeTableInfo');
       if (!body) return;
-      if (info) info.innerText = `${rows.length} 条数据`;
-      body.innerHTML = rows.length ? rows.map(r => {
+
+      function normalizePayChannel(channel) {
+        const c = String(channel || '').replace(/\s+/g, '').toLowerCase();
+        if (c.includes('唤醒') || c.includes('wake') || c.includes('awaken')) return '唤醒';
+        if (c.includes('扫码') || c.includes('scan') || c.includes('qr')) return '扫码';
+        if (c.includes('原生') || c.includes('native')) return '原生';
+        return '其他';
+      }
+
+      // 只改财务详细数据表：同一天 + 同平台 合并成 1 行，3 个支付类型放到同一行显示。
+      const groupedMap = {};
+      rows.forEach(r => {
+        const date = getFinanceDate(r) || '-';
+        const platform = getFinancePlatform(r) || '-';
+        const key = `${date}__${platform}`;
+        const channel = normalizePayChannel(getFinanceChannel(r));
         const orders = getFinanceOrders(r);
         const success = getFinanceSuccess(r);
         const fail = getFinanceFail(r);
+        const amount = getFinanceAmount(r);
         const rate = getFinanceRate(r);
-        const shareRaw = getFinanceAmountShare(r);
-        const share = shareRaw !== '' ? (String(shareRaw).includes('%') ? String(shareRaw) : fmtRate(toRateNumber(shareRaw))) : '-';
+
+        if (!groupedMap[key]) {
+          groupedMap[key] = {
+            date,
+            platform,
+            wakeOrders: 0,
+            scanOrders: 0,
+            nativeOrders: 0,
+            otherOrders: 0,
+            totalOrders: 0,
+            success: 0,
+            fail: 0,
+            amount: 0,
+            weightedRateBase: 0,
+            weightedRateValue: 0
+          };
+        }
+
+        const g = groupedMap[key];
+        if (channel === '唤醒') g.wakeOrders += orders;
+        else if (channel === '扫码') g.scanOrders += orders;
+        else if (channel === '原生') g.nativeOrders += orders;
+        else g.otherOrders += orders;
+
+        g.totalOrders += orders;
+        g.success += success;
+        g.fail += fail;
+        g.amount += amount;
+
+        // 如果表里成功数为空但成功率有值，也能保持合并后的成功率准确。
+        if (orders > 0) {
+          g.weightedRateBase += orders;
+          g.weightedRateValue += rate * orders;
+        }
+      });
+
+      const groupedRows = Object.values(groupedMap).sort((a, b) => {
+        const da = new Date(a.date).getTime() || 0;
+        const db = new Date(b.date).getTime() || 0;
+        if (da !== db) return db - da;
+        return String(a.platform).localeCompare(String(b.platform));
+      });
+
+      const totalAmountAll = groupedRows.reduce((s, g) => s + g.amount, 0);
+
+      if (info) info.innerText = `${groupedRows.length} 平台数据`;
+
+      body.innerHTML = groupedRows.length ? groupedRows.map(g => {
+        const rate = g.totalOrders && g.success
+          ? (g.success / g.totalOrders) * 100
+          : (g.weightedRateBase ? g.weightedRateValue / g.weightedRateBase : 0);
+
+        const fail = g.fail || Math.max(g.totalOrders - g.success, 0);
+        const amountShare = totalAmountAll ? (g.amount / totalAmountAll * 100) : 0;
+
         return `
           <tr>
-            <td>${esc(getFinanceDate(r) || '-')}</td>
-            <td><b>${esc(getFinancePlatform(r))}</b></td>
-            <td>${esc(getFinanceChannel(r))}</td>
-            <td>${fmtNumber(orders)}</td>
-            <td>${fmtNumber(success)}</td>
+            <td>${esc(g.date)}</td>
+            <td><b>${esc(g.platform)}</b></td>
+            <td>${fmtNumber(g.wakeOrders)}</td>
+            <td>${fmtNumber(g.scanOrders)}</td>
+            <td>${fmtNumber(g.nativeOrders)}</td>
+            <td>${fmtNumber(g.totalOrders)}</td>
+            <td>${fmtNumber(g.success)}</td>
             <td>${fmtNumber(fail)}</td>
             <td>${fmtRate(rate)}</td>
-            <td>${fmtMoney(getFinanceAmount(r))}</td>
-            <td>${esc(share)}</td>
+            <td>${fmtMoney(g.amount)}</td>
+            <td>${fmtRate(amountShare)}</td>
           </tr>
         `;
-      }).join('') : `<tr class="finance-empty-row"><td colspan="9">暂无数据：请检查 URL、发布权限、以及表头是否包含 日期 / 平台 / 总订单 / 成功 / 金额</td></tr>`;
+      }).join('') : `<tr class="finance-empty-row"><td colspan="11">暂无数据：请检查 URL、发布权限、以及表头是否包含 日期 / 平台 / 总订单 / 成功 / 金额</td></tr>`;
     }
 
     function openDetail(masterIdx) {
