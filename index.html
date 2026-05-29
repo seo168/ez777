@@ -816,164 +816,6 @@
       white-space:normal;
       min-width:118px;
     }
-
-    .finance-detail-wrap{
-      overflow:hidden;
-    }
-    .finance-card-grid{
-      max-height:760px;
-      overflow:auto;
-      padding:14px;
-      display:grid;
-      grid-template-columns:repeat(2,minmax(520px,1fr));
-      gap:14px;
-      scrollbar-gutter:stable;
-    }
-    .finance-card-grid::-webkit-scrollbar{height:9px;width:9px}
-    .finance-card-grid::-webkit-scrollbar-thumb{background:rgba(147,197,253,.22);border-radius:999px}
-    .finance-report-card{
-      border:1px solid rgba(148,163,184,.16);
-      background:linear-gradient(145deg,rgba(15,23,42,.74),rgba(8,17,31,.46));
-      border-radius:22px;
-      overflow:hidden;
-      box-shadow:0 18px 48px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.035);
-    }
-    .finance-card-top{
-      display:grid;
-      grid-template-columns:minmax(130px,.9fr) minmax(120px,.8fr) minmax(0,2fr);
-      gap:10px;
-      align-items:center;
-      padding:14px 16px;
-      background:rgba(8,17,31,.42);
-      border-bottom:1px solid rgba(148,163,184,.12);
-    }
-    .finance-card-date{
-      color:#bfdbfe;
-      font-size:.8rem;
-      font-weight:900;
-      white-space:nowrap;
-    }
-    .finance-card-platform{
-      color:#fff;
-      font-size:1rem;
-      font-weight:900;
-      white-space:nowrap;
-    }
-    .finance-card-summary{
-      display:flex;
-      gap:8px;
-      justify-content:flex-end;
-      flex-wrap:wrap;
-      min-width:0;
-    }
-    .finance-summary-pill{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding:5px 9px;
-      border-radius:999px;
-      background:rgba(96,165,250,.08);
-      border:1px solid rgba(96,165,250,.11);
-      color:#cbd5e1;
-      font-size:.62rem;
-      font-weight:900;
-      white-space:nowrap;
-    }
-    .finance-summary-pill b{color:#fff;font-size:.68rem}
-    .finance-mini-table{
-      width:100%;
-      min-width:620px;
-      border-collapse:separate;
-      border-spacing:0;
-    }
-    .finance-mini-table th{
-      background:rgba(8,17,31,.34);
-      color:#9fb0cf;
-      font-size:.62rem;
-      font-weight:900;
-      padding:9px 10px;
-      border-bottom:1px solid rgba(148,163,184,.10);
-      text-align:right;
-      white-space:nowrap;
-    }
-    .finance-mini-table th:first-child{text-align:left;padding-left:16px}
-    .finance-mini-table td{
-      padding:10px;
-      border-bottom:1px solid rgba(148,163,184,.075);
-      text-align:right;
-      white-space:nowrap;
-      vertical-align:middle;
-    }
-    .finance-mini-table tr:last-child td{border-bottom:none}
-    .finance-mini-table td:first-child{text-align:left;padding-left:16px}
-    .finance-channel-chip{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      font-size:.72rem;
-      font-weight:900;
-      color:#eaf2ff;
-    }
-    .finance-channel-dot{
-      width:9px;
-      height:9px;
-      border-radius:50%;
-      background:#60a5fa;
-      box-shadow:0 0 0 3px rgba(96,165,250,.08);
-    }
-    .finance-channel-dot.scan{background:#a78bfa;box-shadow:0 0 0 3px rgba(167,139,250,.08)}
-    .finance-channel-dot.native{background:#fbbf24;box-shadow:0 0 0 3px rgba(251,191,36,.08)}
-    .finance-value-main{
-      display:block;
-      color:#f8fbff;
-      font-size:.78rem;
-      font-weight:900;
-      line-height:1.1;
-    }
-    .finance-value-sub{
-      margin-top:5px;
-      display:flex;
-      gap:4px;
-      justify-content:flex-end;
-      align-items:center;
-    }
-    .finance-small-compare{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-width:38px;
-      padding:2px 5px;
-      border-radius:999px;
-      font-size:.52rem;
-      font-weight:900;
-      color:rgba(203,213,225,.66);
-      background:rgba(148,163,184,.04);
-      border:1px solid rgba(148,163,184,.06);
-    }
-    .finance-small-compare.up{color:rgba(52,211,153,.88);background:rgba(52,211,153,.055)}
-    .finance-small-compare.down{color:rgba(248,113,113,.88);background:rgba(248,113,113,.055)}
-    .finance-small-compare.flat{color:rgba(203,213,225,.68)}
-    .finance-empty-card{
-      grid-column:1/-1;
-      padding:2rem;
-      text-align:center;
-      color:#9fb0cf;
-      font-size:.82rem;
-      font-weight:900;
-      border:1px dashed rgba(147,197,253,.22);
-      border-radius:18px;
-      background:rgba(96,165,250,.05);
-    }
-    @media(max-width:1200px){
-      .finance-card-grid{grid-template-columns:1fr;overflow-x:auto}
-      .finance-report-card{min-width:720px}
-    }
-    @media(max-width:700px){
-      .finance-card-top{grid-template-columns:1fr;align-items:start}
-      .finance-card-summary{justify-content:flex-start}
-      .finance-report-card{min-width:680px}
-    }
-
     .finance-platform-grid{
       display:grid;
       grid-template-columns:repeat(2,minmax(0,1fr));
@@ -1013,6 +855,214 @@
     }
     .finance-table-wrap{overflow-x:auto}
     .finance-table-wrap table{min-width:1180px}
+
+    .finance-readable-wrap{
+      padding:1.05rem;
+      overflow-x:auto;
+      scrollbar-gutter:stable;
+    }
+    .finance-readable-wrap::-webkit-scrollbar{height:9px}
+    .finance-readable-wrap::-webkit-scrollbar-thumb{background:rgba(147,197,253,.22);border-radius:999px}
+    .finance-readable-note{
+      margin:0 0 14px;
+      padding:13px 15px;
+      border-radius:18px;
+      border:1px solid rgba(96,165,250,.18);
+      background:rgba(96,165,250,.07);
+      color:#bfdbfe;
+      font-size:.78rem;
+      font-weight:900;
+      line-height:1.5;
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      min-width:980px;
+    }
+    .finance-card-list{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(520px,1fr));
+      gap:14px;
+      min-width:980px;
+    }
+    .finance-report-card{
+      border-radius:24px;
+      border:1px solid rgba(148,163,184,.16);
+      background:linear-gradient(145deg,rgba(15,23,42,.78),rgba(8,17,31,.54));
+      box-shadow:0 16px 42px rgba(0,0,0,.14);
+      overflow:hidden;
+    }
+    .finance-report-head{
+      padding:16px 18px;
+      border-bottom:1px solid rgba(148,163,184,.12);
+      background:rgba(8,17,31,.36);
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+    }
+    .finance-report-title{
+      min-width:0;
+    }
+    .finance-report-platform{
+      font-size:1.08rem;
+      font-weight:900;
+      color:#fff;
+      display:flex;
+      align-items:center;
+      gap:9px;
+    }
+    .finance-report-platform::before{
+      content:"";
+      width:10px;
+      height:10px;
+      border-radius:999px;
+      background:#60a5fa;
+      box-shadow:0 0 18px rgba(96,165,250,.38);
+      flex:0 0 10px;
+    }
+    .finance-report-desc{
+      margin-top:5px;
+      color:#9fb0cf;
+      font-size:.72rem;
+      font-weight:900;
+      line-height:1.45;
+    }
+    .finance-report-date{
+      flex:0 0 auto;
+      padding:7px 11px;
+      border-radius:999px;
+      background:rgba(96,165,250,.11);
+      border:1px solid rgba(96,165,250,.18);
+      color:#bfdbfe;
+      font-size:.72rem;
+      font-weight:900;
+      white-space:nowrap;
+    }
+    .finance-report-kpis{
+      padding:14px 18px;
+      display:grid;
+      grid-template-columns:1.35fr repeat(4,minmax(0,1fr));
+      gap:10px;
+      border-bottom:1px solid rgba(148,163,184,.10);
+    }
+    .finance-report-kpi{
+      min-width:0;
+      border-radius:16px;
+      background:rgba(8,17,31,.34);
+      border:1px solid rgba(148,163,184,.10);
+      padding:11px 12px;
+    }
+    .finance-report-kpi .k{
+      font-size:.61rem;
+      color:#9fb0cf;
+      font-weight:900;
+      margin-bottom:5px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .finance-report-kpi .v{
+      font-size:.9rem;
+      color:#fff;
+      font-weight:900;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .finance-report-compare{
+      padding:0 18px 14px;
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+    }
+    .finance-compare-pill{
+      border-radius:14px;
+      background:rgba(30,41,59,.34);
+      border:1px solid rgba(148,163,184,.10);
+      padding:9px 11px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      color:#cbd5e1;
+      font-size:.68rem;
+      font-weight:900;
+    }
+    .finance-compare-pill b{color:#eaf2ff}
+    .finance-channel-detail{
+      padding:0 18px 18px;
+    }
+    .finance-channel-title{
+      margin-bottom:10px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      color:#dbeafe;
+      font-size:.76rem;
+      font-weight:900;
+    }
+    .finance-channel-title small{
+      color:#9fb0cf;
+      font-size:.64rem;
+      font-weight:900;
+    }
+    .finance-mini-table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0 7px;
+      table-layout:fixed;
+    }
+    .finance-mini-table th{
+      background:transparent;
+      border:none;
+      padding:0 7px 4px;
+      color:#9fb0cf;
+      font-size:.62rem;
+      font-weight:900;
+      text-align:right;
+      white-space:nowrap;
+    }
+    .finance-mini-table th:first-child{text-align:left;width:92px}
+    .finance-mini-table td{
+      border:none;
+      background:rgba(8,17,31,.30);
+      padding:9px 7px;
+      color:#dbeafe;
+      font-size:.72rem;
+      font-weight:900;
+      text-align:right;
+      white-space:nowrap;
+    }
+    .finance-mini-table td:first-child{
+      text-align:left;
+      border-radius:13px 0 0 13px;
+      color:#fff;
+    }
+    .finance-mini-table td:last-child{border-radius:0 13px 13px 0}
+    .finance-channel-tag{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+    }
+    .finance-channel-tag::before{
+      content:"";
+      width:7px;
+      height:7px;
+      border-radius:999px;
+      background:#93c5fd;
+      flex:0 0 7px;
+    }
+    .finance-channel-tag.scan::before{background:#fbbf24}
+    .finance-channel-tag.native::before{background:#34d399}
+    @media(max-width:1350px){
+      .finance-card-list{grid-template-columns:1fr;min-width:760px}
+      .finance-readable-note{min-width:760px}
+    }
+    @media(max-width:800px){
+      .finance-report-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .finance-report-compare{grid-template-columns:1fr}
+      .finance-card-list,.finance-readable-note{min-width:720px}
+    }
     .finance-empty-row td{
       padding:2rem!important;
       color:#9fb0cf;
@@ -1398,15 +1448,22 @@
           </div>
         </div>
 
-                <div class="table-container finance-detail-wrap">
+        <div class="table-container finance-table-wrap">
           <div class="table-head-bar">
             <span><i class="fas fa-table"></i> 财务详细数据表</span>
-            <span><span id="financeTableInfo" style="font-size:.76rem;font-weight:900;color:#9fb0cf;">0 条数据</span><span class="finance-scroll-tip">← 左右滑动查看更多 →</span></span>
+            <span id="financeTableInfo" style="font-size:.76rem;font-weight:900;color:#9fb0cf;">0 条数据</span>
           </div>
-          <div class="finance-card-grid" id="financeReportBody">
-            <div class="finance-empty-card">暂无数据，请先连接 Google Sheet</div>
+          <div class="finance-readable-wrap">
+            <div class="finance-readable-note">
+              <i class="fas fa-circle-info"></i>
+              <span>显示方式：每个平台一个大卡片。上方是平台总汇总，下方按 唤醒 / 扫码 / 原生 拆分独立数据。金额已统一显示为 INR，默认只显示最近 3 天数据。</span>
+            </div>
+            <div id="financeReportBody" class="finance-card-list">
+              <div class="finance-compare-empty">暂无数据，请先连接 Google Sheet</div>
+            </div>
           </div>
-        </div>      </div>
+        </div>
+      </div>
 
       <div id="maintenance" class="page-content">
         <div class="sub-page-title"><h3><i class="fas fa-screwdriver-wrench"></i> 维护数据</h3></div>
@@ -2211,7 +2268,7 @@
     }
 
     function fmtMoney(n) {
-      return '¥ ' + Number(n || 0).toLocaleString('en-US', { maximumFractionDigits: 2 });
+      return 'INR ' + Number(n || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 });
     }
 
     function fmtRate(n) {
@@ -2741,69 +2798,48 @@
       const info = document.getElementById('financeTableInfo');
       if (!body) return;
 
-      const channelOrder = ['唤醒', '扫码', '原生'];
+      const channelKeys = ['唤醒','扫码','原生'];
+      const channelLabel = { '唤醒':'唤醒订单', '扫码':'扫码订单', '原生':'原生订单' };
 
-      function emptyChannel() {
-        return { orders:0, success:0, amount:0, rate:0, amountShare:0, hasRow:false };
-      }
+      const grouped = {};
 
-      function buildGrouped(sourceRows) {
-        const grouped = {};
+      rows.forEach(r => {
+        const date = getFinanceDate(r) || '-';
+        const platform = getFinancePlatform(r);
+        const ch = normalizeChannelName(getFinanceChannel(r));
+        const key = `${date}__${platform}`;
 
-        sourceRows.forEach(r => {
-          const date = getFinanceDate(r) || '-';
-          const platform = getFinancePlatform(r);
-          const key = `${date}__${platform}`;
-          const ch = normalizeChannelName(getFinanceChannel(r));
+        if (!grouped[key]) {
+          grouped[key] = {
+            date,
+            platform,
+            rechargeSuccessAmount: 0,
+            orders: 0,
+            success: 0,
+            amount: 0,
+            channel: {
+              '唤醒': { orders:0, success:0, amount:0 },
+              '扫码': { orders:0, success:0, amount:0 },
+              '原生': { orders:0, success:0, amount:0 }
+            }
+          };
+        }
 
-          if (!grouped[key]) {
-            grouped[key] = {
-              date,
-              platform,
-              rechargeSuccessAmount: 0,
-              channels: {
-                '唤醒': emptyChannel(),
-                '扫码': emptyChannel(),
-                '原生': emptyChannel()
-              }
-            };
-          }
+        const orders = getFinanceOrders(r);
+        const success = getFinanceSuccess(r);
+        const amount = getFinanceAmount(r);
 
-          const rechargeValue = getFinanceRechargeSuccessAmount(r);
-          if (rechargeValue) {
-            grouped[key].rechargeSuccessAmount = Math.max(grouped[key].rechargeSuccessAmount, rechargeValue);
-          }
+        grouped[key].orders += orders;
+        grouped[key].success += success;
+        grouped[key].amount += amount;
+        grouped[key].rechargeSuccessAmount += getFinanceRechargeSuccessAmount(r);
 
-          if (!grouped[key].channels[ch]) grouped[key].channels[ch] = emptyChannel();
-
-          const orders = getFinanceOrders(r);
-          const success = getFinanceSuccess(r);
-          const amount = getFinanceAmount(r);
-          const explicitRate = getFinanceRate(r);
-          const rawShare = getFinanceAmountShare(r);
-          const amountShare = rawShare !== '' ? toRateNumber(rawShare) : 0;
-
-          grouped[key].channels[ch].orders += orders;
-          grouped[key].channels[ch].success += success;
-          grouped[key].channels[ch].amount += amount;
-          grouped[key].channels[ch].rate = explicitRate || (orders ? success / orders * 100 : 0);
-          grouped[key].channels[ch].amountShare = amountShare;
-          grouped[key].channels[ch].hasRow = true;
-        });
-
-        return grouped;
-      }
-
-      const currentGrouped = buildGrouped(rows);
-
-      const selectedPlatform = document.getElementById('financePlatformFilter')?.value || '';
-      const selectedChannel = document.getElementById('financeChannelFilter')?.value || '';
-      const compareRows = dbFinance.filter(r => {
-        const okPlatform = !selectedPlatform || getFinancePlatform(r) === selectedPlatform;
-        const okChannel = !selectedChannel || getFinanceChannel(r) === selectedChannel;
-        return okPlatform && okChannel;
+        if (grouped[key].channel[ch]) {
+          grouped[key].channel[ch].orders += orders;
+          grouped[key].channel[ch].success += success;
+          grouped[key].channel[ch].amount += amount;
+        }
       });
-      const allGrouped = buildGrouped(compareRows);
 
       const dateWeight = d => {
         const obj = financeDateToObj(d);
@@ -2816,126 +2852,98 @@
         return idx >= 0 ? idx : 999;
       };
 
-      const list = Object.values(currentGrouped).sort((a, b) => {
+      const list = Object.values(grouped).sort((a, b) => {
         const dateDiff = dateWeight(b.date) - dateWeight(a.date);
         if (dateDiff) return dateDiff;
         return platformWeight(a.platform) - platformWeight(b.platform);
       });
 
+      const totalAmountAll = list.reduce((sum, v) => sum + (v.amount || 0), 0);
+      const byKey = Object.fromEntries(list.map(v => [`${v.date}__${v.platform}`, v]));
+
+      function previousCard(v, offset) {
+        const prevDate = shiftDate(v.date, -offset);
+        return byKey[`${prevDate}__${v.platform}`] || null;
+      }
+
+      function compareLine(v) {
+        const prev1 = previousCard(v, 1);
+        const prev2 = previousCard(v, 2);
+        const rateNow = v.orders ? v.success / v.orders * 100 : 0;
+        const r1 = prev1 && prev1.orders ? prev1.success / prev1.orders * 100 : 0;
+        const r2 = prev2 && prev2.orders ? prev2.success / prev2.orders * 100 : 0;
+        const diff = (a,b) => `${a - b >= 0 ? '+' : ''}${(a-b).toFixed(2)}%`;
+        return `
+          <div class="finance-report-compare">
+            <div class="finance-compare-pill"><span>昨日成功率对比</span><b>${prev1 ? diff(rateNow, r1) : '-'}</b></div>
+            <div class="finance-compare-pill"><span>前日成功率对比</span><b>${prev2 ? diff(rateNow, r2) : '-'}</b></div>
+          </div>
+        `;
+      }
+
       if (info) {
         const dateText = [...new Set(list.map(x => x.date))].join(' / ');
-        info.innerText = list.length ? `${list.length} 张卡片｜最近3天：${dateText}` : '0 条数据';
-      }
-
-      function shiftDateText(dateText, offset) {
-        const obj = financeDateToObj(dateText);
-        if (!obj) return '';
-        const d = new Date(obj);
-        d.setDate(d.getDate() + offset);
-        return financeDateFromObj(d);
-      }
-
-      function getPrevChannel(v, ch, offset) {
-        const d = shiftDateText(v.date, offset);
-        const prev = allGrouped[`${d}__${v.platform}`];
-        return prev?.channels?.[ch] || null;
-      }
-
-      function diffClass(n) {
-        if (!Number.isFinite(n)) return 'flat';
-        if (n > 0.05) return 'up';
-        if (n < -0.05) return 'down';
-        return 'flat';
-      }
-
-      function calcCompare(current, previous, mode) {
-        if (previous === null || previous === undefined) return null;
-        if (!previous) return current ? 100 : 0;
-        if (mode === 'point') return current - previous;
-        return ((current - previous) / previous) * 100;
-      }
-
-      function smallCompare(current, prev1, prev2, metric, mode = 'ratio') {
-        const p1 = prev1 ? metric(prev1) : null;
-        const p2 = prev2 ? metric(prev2) : null;
-        const d1 = calcCompare(current, p1, mode);
-        const d2 = calcCompare(current, p2, mode);
-        const text = n => {
-          if (n === null || !Number.isFinite(n)) return '-';
-          const sign = n > 0 ? '+' : '';
-          return `${sign}${n.toFixed(1)}%`;
-        };
-        return `<span class="finance-value-sub">
-          <em class="finance-small-compare ${diffClass(d1)}" title="对比昨天">昨 ${text(d1)}</em>
-          <em class="finance-small-compare ${diffClass(d2)}" title="对比前天">前 ${text(d2)}</em>
-        </span>`;
-      }
-
-      function metricCell(v, ch, metric, formatter, mode = 'ratio') {
-        const cur = v.channels[ch] || emptyChannel();
-        const currentValue = metric(cur);
-        const prev1 = getPrevChannel(v, ch, -1);
-        const prev2 = getPrevChannel(v, ch, -2);
-        return `<span class="finance-value-main">${formatter(cur)}</span>${smallCompare(currentValue, prev1, prev2, metric, mode)}`;
-      }
-
-      function channelDotClass(ch) {
-        if (ch === '扫码') return 'scan';
-        if (ch === '原生') return 'native';
-        return '';
-      }
-
-      function totals(v) {
-        const orders = channelOrder.reduce((s,ch)=>s+(v.channels[ch]?.orders||0),0);
-        const success = channelOrder.reduce((s,ch)=>s+(v.channels[ch]?.success||0),0);
-        const amount = channelOrder.reduce((s,ch)=>s+(v.channels[ch]?.amount||0),0);
-        const rate = orders ? success / orders * 100 : 0;
-        return { orders, success, amount, rate };
+        info.innerText = list.length
+          ? `${list.length} 个平台卡片｜最近3天：${dateText}`
+          : '0 条数据';
       }
 
       body.innerHTML = list.length ? list.map(v => {
-        const t = totals(v);
+        const rate = v.orders ? v.success / v.orders * 100 : 0;
+        const share = totalAmountAll ? v.amount / totalAmountAll * 100 : 0;
+
+        const channelRows = channelKeys.map(ch => {
+          const c = v.channel[ch] || {orders:0, success:0, amount:0};
+          const cRate = c.orders ? c.success / c.orders * 100 : 0;
+          const cShare = v.amount ? c.amount / v.amount * 100 : 0;
+          const cls = ch === '扫码' ? 'scan' : ch === '原生' ? 'native' : '';
+          return `
+            <tr>
+              <td><span class="finance-channel-tag ${cls}">${channelLabel[ch]}</span></td>
+              <td>${fmtNumber(c.orders)}</td>
+              <td>${fmtNumber(c.success)}</td>
+              <td>${fmtMoney(c.amount)}</td>
+              <td>${fmtRate(cRate)}</td>
+              <td>${fmtRate(cShare)}</td>
+            </tr>
+          `;
+        }).join('');
+
         return `
           <div class="finance-report-card">
-            <div class="finance-card-top">
-              <div class="finance-card-date">${esc(v.date)}</div>
-              <div class="finance-card-platform">${esc(v.platform)}</div>
-              <div class="finance-card-summary">
-                <span class="finance-summary-pill">总充值 <b>${fmtMoney(v.rechargeSuccessAmount)}</b></span>
-                <span class="finance-summary-pill">总订单 <b>${fmtNumber(t.orders)}</b></span>
-                <span class="finance-summary-pill">成功率 <b>${fmtRate(t.rate)}</b></span>
-                <span class="finance-summary-pill">金额 <b>${fmtMoney(t.amount)}</b></span>
+            <div class="finance-report-head">
+              <div class="finance-report-title">
+                <div class="finance-report-platform">${esc(v.platform)}</div>
+                <div class="finance-report-desc">平台汇总：先看总金额、总订单、成功率；下面再看 唤醒 / 扫码 / 原生 三种支付渠道表现。</div>
               </div>
+              <div class="finance-report-date">${esc(v.date)}</div>
             </div>
-            <div style="overflow-x:auto;">
+
+            <div class="finance-report-kpis">
+              <div class="finance-report-kpi"><div class="k">总充值成功金额（公式）</div><div class="v">${fmtMoney(v.rechargeSuccessAmount)}</div></div>
+              <div class="finance-report-kpi"><div class="k">总订单</div><div class="v">${fmtNumber(v.orders)}</div></div>
+              <div class="finance-report-kpi"><div class="k">成功</div><div class="v">${fmtNumber(v.success)}</div></div>
+              <div class="finance-report-kpi"><div class="k">金额</div><div class="v">${fmtMoney(v.amount)}</div></div>
+              <div class="finance-report-kpi"><div class="k">成功率 / 金额占比</div><div class="v">${fmtRate(rate)} / ${fmtRate(share)}</div></div>
+            </div>
+
+            ${compareLine(v)}
+
+            <div class="finance-channel-detail">
+              <div class="finance-channel-title">
+                <span>渠道拆分明细</span>
+                <small>每个渠道单独计算订单、成功、金额、成功率、金额占比</small>
+              </div>
               <table class="finance-mini-table">
                 <thead>
-                  <tr>
-                    <th>渠道</th>
-                    <th>总订单</th>
-                    <th>成功</th>
-                    <th>金额</th>
-                    <th>成功率</th>
-                    <th>金额占比</th>
-                  </tr>
+                  <tr><th>渠道</th><th>总订单</th><th>成功</th><th>金额</th><th>成功率</th><th>金额占比</th></tr>
                 </thead>
-                <tbody>
-                  ${channelOrder.map(ch => `
-                    <tr>
-                      <td><span class="finance-channel-chip"><i class="finance-channel-dot ${channelDotClass(ch)}"></i>${ch}订单</span></td>
-                      <td>${metricCell(v, ch, c => c.orders || 0, c => fmtNumber(c.orders || 0))}</td>
-                      <td>${metricCell(v, ch, c => c.success || 0, c => fmtNumber(c.success || 0))}</td>
-                      <td>${metricCell(v, ch, c => c.amount || 0, c => fmtMoney(c.amount || 0))}</td>
-                      <td>${metricCell(v, ch, c => c.rate || 0, c => fmtRate(c.rate || 0), 'point')}</td>
-                      <td>${metricCell(v, ch, c => c.amountShare || 0, c => fmtRate(c.amountShare || 0), 'point')}</td>
-                    </tr>
-                  `).join('')}
-                </tbody>
+                <tbody>${channelRows}</tbody>
               </table>
             </div>
           </div>
         `;
-      }).join('') : `<div class="finance-empty-card">暂无数据：默认只显示最近3天。请检查日期筛选 / Google Sheet 数据日期。</div>`;
+      }).join('') : `<div class="finance-compare-empty">暂无数据：默认只显示最近3天。请检查日期筛选 / Google Sheet 数据日期。</div>`;
     }
 
     function openDetail(masterIdx) {
